@@ -1,4 +1,5 @@
 rootProject.name = 'attendance'
 include 'module-client'
 include 'module-admin'
+include 'module-core'
 

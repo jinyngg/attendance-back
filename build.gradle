@@ -56,6 +56,16 @@ project(':module-client') {
 	}
 }
 
+project(':module-core') {
+}
+
+project(':module-client') {
+
+	dependencies {
+		implementation project(':module-core')
+	}
+}
+
 project(':module-admin') {
 
 	dependencies {
