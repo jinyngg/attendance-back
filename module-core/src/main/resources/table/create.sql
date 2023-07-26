@@ -28,26 +28,49 @@ CREATE TABLE department
 -- 회원 테이블 생성
 CREATE TABLE employee
 (
-    id             BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
-    status_id      BIGINT COMMENT '회원상태 ID',
-    position_id    BIGINT COMMENT '직급 ID',
-    department_id  BIGINT COMMENT '부서 ID',
-    email          VARCHAR(100) UNIQUE COMMENT '이메일',
-    phone          VARCHAR(60) COMMENT '전화번호',
-    name           VARCHAR(100) COMMENT '이름',
-    birthdate      DATE COMMENT '생년월일',
-    password       CHAR(60) COLLATE ascii_bin COMMENT '비밀번호',
-    zip_address    CHAR(5) COLLATE ascii_bin COMMENT '우편번호',
-    road_address   VARCHAR(255) COMMENT '주소1(도로명)',
-    detail_address VARCHAR(255) COMMENT '주소2(상세주소)',
-    role           VARCHAR(20) COMMENT '권한',
-    hire_date      DATE COMMENT '입사일',
-    quit_date      DATE COMMENT '퇴사일',
-    created_at     TIMESTAMP NOT NULL COMMENT '생성일',
-    updated_at     TIMESTAMP NOT NULL COMMENT '수정일',
-    FOREIGN KEY (position_id) REFERENCES position (id),    -- position 테이블의 id 칼럼을 참조
-    FOREIGN KEY (status_id) REFERENCES status (id),        -- status 테이블의 id 칼럼을 참조
-    FOREIGN KEY (department_id) REFERENCES department (id) -- department 테이블의 id 칼럼을 참조;
+    id               BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    position_id      BIGINT NOT NULL COMMENT '직급 ID',
+    department_id    BIGINT NOT NULL COMMENT '부서 ID',
+    status_id        BIGINT NOT NULL COMMENT '회원상태 ID',
+    name             VARCHAR(100) NOT NULL COMMENT '이름',
+    email            VARCHAR(100) NOT NULL UNIQUE COMMENT '이메일',
+    password         CHAR(60) NOT NULL COLLATE ascii_bin COMMENT '비밀번호',
+    hire_date        DATE NOT NULL COMMENT '입사일',
+    quit_date        DATE COMMENT '퇴사일',
+    day_off_remains  INT NOT NULL COMMENT '잔여 연차수',
+    role             VARCHAR(20) NOT NULL COMMENT '권한',
+    phone            VARCHAR(60) NOT NULL COMMENT '전화번호',
+    birthdate        DATE NOT NULL COMMENT '생년월일',
+    zip_address      CHAR(5) COLLATE ascii_bin COMMENT '우편번호',
+    road_address     VARCHAR(255) COMMENT '주소1(도로명)',
+    detail_address   VARCHAR(255) COMMENT '주소2(상세주소)',
+    created_at       TIMESTAMP NOT NULL COMMENT '생성일',
+    updated_at       TIMESTAMP NOT NULL COMMENT '수정일',
+    FOREIGN KEY (position_id) REFERENCES position (id),     -- position 테이블의 id 칼럼을 참조
+    FOREIGN KEY (department_id) REFERENCES department (id), -- department 테이블의 id 칼럼을 참조
+    FOREIGN KEY (status_id) REFERENCES status (id)          -- status 테이블의 id 칼럼을 참조;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE position_history
+(
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    employee_id BIGINT    NOT NULL,
+    position_id BIGINT    NOT NULL,
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL,
+    FOREIGN KEY (employee_id) REFERENCES employee (id),
+    FOREIGN KEY (position_id) REFERENCES position (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE department_history
+(
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    employee_id BIGINT    NOT NULL,
+    department_id BIGINT    NOT NULL,
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL,
+    FOREIGN KEY (employee_id) REFERENCES employee (id),
+    FOREIGN KEY (department_id) REFERENCES department(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 회원 상태 이력 테이블 생성
@@ -62,15 +85,51 @@ CREATE TABLE status_history
     FOREIGN KEY (status_id) REFERENCES status (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 연차/당직 테이블
-CREATE TABLE attendance
+-- 연차(직급 별 지급하는 연차의 개수)
+CREATE TABLE day_off_by_position
 (
-    id         BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
-    member_id  BIGINT      NOT NULL COMMENT '회원 ID',
-    start_date DATE        NOT NULL COMMENT '시작일',
-    end_date   DATE        NOT NULL COMMENT '종료일',
-    type       VARCHAR(20) NOT NULL COMMENT '연차/당직',
-    created_at TIMESTAMP   NOT NULL COMMENT '생성일',
-    updated_at TIMESTAMP   NOT NULL COMMENT '수정일',
-    FOREIGN KEY (member_id) REFERENCES employee (id)
-);
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    position_id BIGINT    NOT NULL,
+    amount      TINYINT   NOT NULL,
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL,
+    FOREIGN KEY (position_id) REFERENCES position (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 연차
+CREATE TABLE day_off
+(
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    type        VARCHAR(20) NOT NULL,
+    amount      TINYINT   NOT NULL,
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 연차 등록요청/응답 이력
+CREATE TABLE day_off_history
+(
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    employee_id BIGINT NOT NULL,
+    day_off_id  BIGINT NOT NULL,
+    status      VARCHAR(20) NOT NULL,
+    start_date  DATE NOT NULL,
+    end_date    DATE NOT NULL,
+    amount      FLOAT NOT NULL,
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL,
+    FOREIGN KEY (employee_id) REFERENCES employee (id),
+    FOREIGN KEY (day_off_id) REFERENCES day_off (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 당직 테이블 생성
+CREATE TABLE duty_history
+(
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    employee_id BIGINT    NOT NULL,
+    status      VARCHAR(20) NOT NULL,
+    duty_date   DATE NOT NULL,
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL,
+    FOREIGN KEY (employee_id) REFERENCES employee (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
