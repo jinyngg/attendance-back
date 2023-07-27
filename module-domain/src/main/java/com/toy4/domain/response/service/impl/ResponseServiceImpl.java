@@ -1,4 +1,4 @@
-package com.toy4.global.impl;
+package com.toy4.domain.response.service.impl;
 
 import static com.toy4.domain.response.type.SuccessCode.SUCCESS;
 

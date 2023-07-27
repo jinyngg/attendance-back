@@ -49,26 +49,31 @@ subprojects {
 	}
 }
 
-project(':module-client') {
+project(':module-domain') {
+
+	bootJar { enabled = false }
+	jar { enabled = true }
 
 	dependencies {
-
 	}
 }
 
-project(':module-core') {
-}
-
 project(':module-client') {
 
+	bootJar { enabled = true }
+	jar { enabled = false }
+
 	dependencies {
-		implementation project(':module-core')
+		implementation project(':module-domain')
 	}
 }
 
 project(':module-admin') {
 
+	bootJar { enabled = true }
+	jar { enabled = false }
+
 	dependencies {
-		implementation project(':module-client')
+		implementation project(':module-domain')
 	}
 }
