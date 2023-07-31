@@ -37,4 +37,8 @@ public class EmployeeProfileImageService {
 		return "/images/profile/" + directoryName + newFileName;
 	}
 
+	public String getDefaultFile() {
+		String savePath = "/images/default/user.png";
+		return savePath;
+	}
 }
