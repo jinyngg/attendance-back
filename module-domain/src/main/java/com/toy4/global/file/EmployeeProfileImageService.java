@@ -38,8 +38,7 @@ public class EmployeeProfileImageService {
 	}
 
 	public String getDefaultFile() {
-		String savePath = "/images/default/user.png";
-		return savePath;
+		return "/images/default/user.png";
 	}
 
 	public void removeIfFileExists(String imagePath) {
