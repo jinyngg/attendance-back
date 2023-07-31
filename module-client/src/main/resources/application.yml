@@ -17,3 +17,8 @@ spring:
     database: mysql
 server:
   port: 8080
+file:
+  upload:
+    path:
+      windows: D:\\attendance\\images\\
+      linux: /opt/attendance/images/
