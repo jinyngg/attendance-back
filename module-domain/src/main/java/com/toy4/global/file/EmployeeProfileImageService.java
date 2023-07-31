@@ -6,18 +6,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import com.toy4.global.config.FileUploadConfig;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class EmployeeProfileImageService {
 
-	public static final String FILE_UPLOAD_PATH = "D:\\attendance\\images/";
+	private final FileUploadConfig fileUploadConfig;
 
 	public String saveFile(Long employeeId, MultipartFile file) {
 		String directoryName = employeeId + "_" + System.currentTimeMillis() + "/";
-		String filePath = FILE_UPLOAD_PATH + directoryName;
+		String filePath = fileUploadConfig.getFileUploadPath() + directoryName;
 		File directory = new File(filePath);
 		if (!directory.mkdir()) {
 			return null;
@@ -42,7 +44,7 @@ public class EmployeeProfileImageService {
 	}
 
 	public void removeIfFileExists(String imagePath) {
-		Path path = Paths.get(FILE_UPLOAD_PATH + imagePath.replace("/images/profile", ""));
+		Path path = Paths.get(fileUploadConfig.getFileUploadPath() + imagePath.replace("/images/profile", ""));
 		if (Files.exists(path)) {
 			removeFile(path);
 
