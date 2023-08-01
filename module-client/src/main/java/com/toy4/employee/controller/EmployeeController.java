@@ -26,6 +26,12 @@ public class EmployeeController {
 
 	private final EmployeeService employeeService;
 
+	@GetMapping(path="/personal-info/{id}")
+	public ResponseEntity<?> getPersonalInfo(@PathVariable Long id) {
+		CommonResponse<?> response = employeeService.getEmployeeInfo(id);
+		return ResponseEntity.ok(response);
+	}
+
 	@PutMapping(path="/personal-info",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<?> updatePersonalInfo(
 		@Validated @RequestPart PersonalInfoRequest personalInfoRequest,
