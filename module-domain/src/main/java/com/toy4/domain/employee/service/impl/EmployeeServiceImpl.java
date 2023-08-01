@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.toy4.domain.employee.domain.Employee;
 import com.toy4.domain.employee.dto.EmployeeDto;
 import com.toy4.domain.employee.dto.MyPageResponse;
+import com.toy4.domain.employee.dto.PersonalInfoResponse;
 import com.toy4.domain.employee.exception.EmployeeException;
 import com.toy4.domain.employee.repository.EmployeeRepository;
 import com.toy4.domain.employee.service.EmployeeService;
@@ -60,6 +61,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.update(employeeDto, profileImagePath);
 
 		return responseService.success(employee.getId(), COMPLETE_PERSONAL_INFO_UPDATE);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public CommonResponse<?> getEmployeeInfo(Long id) {
+		Employee employee = employeeRepository.findById(id)
+			.orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+		PersonalInfoResponse response = PersonalInfoResponse.from(employee);
+		return responseService.success(response, SUCCESS);
 	}
 
 	@Override
