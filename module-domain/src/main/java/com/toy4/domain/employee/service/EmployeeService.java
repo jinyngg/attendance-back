@@ -6,4 +6,6 @@ public interface EmployeeService {
 
     // 이메일 유효성 확인
     CommonResponse<?> validateEmail(String email);
+    CommonResponse<?> getMyPage(Long id);
+
 }
