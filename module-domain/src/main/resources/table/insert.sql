@@ -1,28 +1,37 @@
 -- 부서
 INSERT INTO department (type, created_at, updated_at)
 VALUES
-    ('개발팀', NOW(), NOW()),
-    ('기획팀', NOW(), NOW()),
-    ('영업팀', NOW(), NOW()),
-    ('인사팀', NOW(), NOW()),
-    ('회계팀', NOW(), NOW()),
-    ('법무팀', NOW(), NOW());
+    ('DEVELOPMENT', NOW(), NOW()),
+    ('PLANNING', NOW(), NOW()),
+    ('SALES', NOW(), NOW()),
+    ('HR', NOW(), NOW()),
+    ('ACCOUNTING', NOW(), NOW()),
+    ('LEGAL', NOW(), NOW());
 
 -- 직급
 INSERT INTO position (type, created_at, updated_at)
 VALUES
-    ('사원', NOW(), NOW()),
-    ('대리', NOW(), NOW()),
-    ('과장', NOW(), NOW()),
-    ('차장', NOW(), NOW()),
-    ('부장', NOW(), NOW());
+    ('STAFF', NOW(), NOW()),
+    ('ASSISTANT_MANAGER', NOW(), NOW()),
+    ('MANAGER', NOW(), NOW()),
+    ('DEPUTY_GENERAL_MANAGER', NOW(), NOW()),
+    ('GENERAL_MANAGER', NOW(), NOW());
 
 -- 상태
 INSERT INTO status (type, created_at, updated_at)
 VALUES
-    ('입사', NOW(), NOW()),
-    ('퇴사', NOW(), NOW()),
-    ('재입사', NOW(), NOW()),
-    ('휴직', NOW(), NOW()),
-    ('복직', NOW(), NOW()),
-    ('퇴직', NOW(), NOW());
+    ('JOINED', NOW(), NOW()),
+    ('RESIGNED', NOW(), NOW()),
+    ('REJOINED', NOW(), NOW()),
+    ('ON_LEAVE', NOW(), NOW()),
+    ('REINSTATED', NOW(), NOW()),
+    ('RETIRED', NOW(), NOW());
+
+-- 직급 기준 연차 지급 개수
+INSERT INTO day_off_by_position (position_id, amount, created_at, updated_at)
+VALUES
+    ((SELECT id FROM position WHERE position.type = 'STAFF'), 15, NOW(), NOW()),
+    ((SELECT id FROM position WHERE position.type = 'ASSISTANT_MANAGER'), 17, NOW(), NOW()),
+    ((SELECT id FROM position WHERE position.type = 'MANAGER'), 19, NOW(), NOW()),
+    ((SELECT id FROM position WHERE position.type = 'DEPUTY_GENERAL_MANAGER'), 21, NOW(), NOW()),
+    ((SELECT id FROM position WHERE position.type = 'GENERAL_MANAGER'), 23, NOW(), NOW());

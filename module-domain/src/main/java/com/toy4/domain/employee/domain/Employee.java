@@ -23,6 +23,9 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Employee extends BaseEntity {
 
+//  @Column(name = "profile_url", length = 255)
+//  private String profileUrl;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "position_id", referencedColumnName = "id", nullable = false)
   private Position position;

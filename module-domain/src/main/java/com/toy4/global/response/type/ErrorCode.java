@@ -1,5 +1,7 @@
 package com.toy4.global.response.type;
 
+import java.util.Arrays;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -14,18 +16,21 @@ public enum ErrorCode {
     EMPLOYEE_TRANSACTION_LOCK(HttpStatus.UNAUTHORIZED, "이메일이 이미 사용 중입니다."),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류가 발생하였습니다."),
-    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     CONSTRAINT_VIOLATION(HttpStatus.CONFLICT, "제약 조건 위반"),
 
     ALREADY_EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다."),
     ALREADY_EXISTS_PHONE(HttpStatus.BAD_REQUEST, "이미 사용중인 전화번호입니다."),
 
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    INVALID_REQUEST_POSITION_ID(HttpStatus.BAD_REQUEST, "잘못된 직급 요청입니다."),
+    INVALID_REQUEST_DEPARTMENT_TYPE(HttpStatus.BAD_REQUEST, "잘못된 부서 요청입니다."),
+    INVALID_REQUEST_POSITION_TYPE(HttpStatus.BAD_REQUEST, "잘못된 직급 요청입니다."),
+    INVALID_REQUEST_STATUS_TYPE(HttpStatus.BAD_REQUEST, "잘못된 회원 상태 요청입니다."),
+
     INVALID_EMAIL(HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다."),
     INVALID_USERNAME(HttpStatus.BAD_REQUEST, "이름은 2글자 이상 3글자 이하이며 한글로만 작성되어야 합니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호는 공백은 사용할 수 없으며, 영어와 숫자를 혼용하여 최소 8글자 이상 최대 16글자 이하로 작성되어야 합니다."),
     INVALID_PHONE_FORMAT(HttpStatus.BAD_REQUEST, "전화번호 형식이 올바르지 않습니다."),
-
-    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "이메일 주소 형식이 잘못되었습니다."),
 
     ENTITY_NOT_FOUND(HttpStatus.BAD_REQUEST, "요청된 데이터를 찾을 수 없습니다."),
     UNAUTHENTICATED_REQUEST(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자의 요청입니다."),
@@ -38,4 +43,12 @@ public enum ErrorCode {
 
     private final HttpStatus httpStatus;
     private final String message;
+
+    public static ErrorCode getByErrorCodeName(String errorCodeName) {
+        Optional<ErrorCode> errorCode = Arrays.stream(ErrorCode.values())
+                .filter(code -> code.name().equals(errorCodeName))
+                .findFirst();
+
+        return errorCode.orElse(null);
+    }
 }
