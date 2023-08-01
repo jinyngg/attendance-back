@@ -15,6 +15,9 @@ spring:
       ddl-auto: create
     show-sql: true
     database: mysql
+  web:
+    resources:
+      static-locations: classpath:/image/default/
 server:
   port: 8080
 file:
