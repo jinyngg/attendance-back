@@ -2,6 +2,7 @@ package com.toy4.domain.department.domain;
 
 import com.toy4.domain.BaseEntity;
 import com.toy4.domain.department.type.DepartmentType;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

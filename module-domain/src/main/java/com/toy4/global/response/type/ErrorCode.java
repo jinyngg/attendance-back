@@ -43,7 +43,6 @@ public enum ErrorCode {
 
     private final HttpStatus httpStatus;
     private final String message;
-
     public static ErrorCode getByErrorCodeName(String errorCodeName) {
         Optional<ErrorCode> errorCode = Arrays.stream(ErrorCode.values())
                 .filter(code -> code.name().equals(errorCodeName))
