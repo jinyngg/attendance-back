@@ -15,6 +15,7 @@ public enum SuccessCode {
     COMPLETE_SIGNUP("회원가입이 완료되었습니다."),
     COMPLETE_CHANGE_PASSWORD("비밀번호가 변경되었습니다."),
     COMPLETE_EMAIL_TRANSMISSION("이메일 전송이 완료되었습니다."),
+    COMPLETE_PERSONAL_INFO_UPDATE("개인정보 수정이 완료되었습니다."),
     ;
 
     private final String message;

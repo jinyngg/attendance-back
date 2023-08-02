@@ -6,6 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface EmployeeService {
 
+    // 이메일 유효성 확인
+    CommonResponse<?> validateEmail(String email);
+    
     // 이메일 중복 확인
     CommonResponse<?> validateUniqueEmail(String email);
 
@@ -14,4 +17,8 @@ public interface EmployeeService {
 
     // 로그인
     CommonResponse<?> login(EmployeeDto request);
+  
+    CommonResponse<?> updateEmployeeInfo(EmployeeDto employeeDto, MultipartFile file);
+    CommonResponse<?> getEmployeeInfo(Long id);
+    CommonResponse<?> getMyPage(Long id);
 }

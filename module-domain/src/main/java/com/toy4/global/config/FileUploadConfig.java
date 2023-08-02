@@ -16,6 +16,16 @@ public class FileUploadConfig {
 
 	public String getFileUploadPath() {
 		String separator = File.separator;
-		return separator.equals("\\") ? fileUploadPathWindows : fileUploadPathLinux;
+		String fileUploadPath = separator.equals("\\") ? fileUploadPathWindows : fileUploadPathLinux;
+
+		createDirectoryIfNotExists(fileUploadPath);
+		return fileUploadPath;
+	}
+
+	public void createDirectoryIfNotExists(String path) {
+		File directory = new File(path);
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
 	}
 }
