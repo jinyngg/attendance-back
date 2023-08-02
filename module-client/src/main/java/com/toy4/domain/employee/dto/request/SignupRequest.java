@@ -8,15 +8,19 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignupRequest {
 
     // 회원가입 이미지 URL
-    private String profileImageUrl;
+//    private String profileImageUrl;
 
     @NotBlank(message = "이메일이 누락되었습니다.")
     @Email(message = "이메일 주소 형식이 잘못되었습니다.")

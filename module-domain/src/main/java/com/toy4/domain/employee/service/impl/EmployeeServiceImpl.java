@@ -37,6 +37,7 @@ import com.toy4.domain.status.domain.Status;
 import com.toy4.domain.status.exception.StatusException;
 import com.toy4.domain.status.repository.StatusRepository;
 import com.toy4.domain.status.type.StatusType;
+import com.toy4.global.file.component.EmployeeProfileImageService;
 import com.toy4.global.jwt.JwtProvider;
 import com.toy4.global.response.dto.CommonResponse;
 import com.toy4.global.response.service.ResponseService;
@@ -46,6 +47,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ResponseService responseService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final EmployeeProfileImageService employeeProfileImageService;
 
     @Override
     public CommonResponse<?> validateUniqueEmail(String email) {
@@ -70,24 +73,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public CommonResponse<?> signup(EmployeeDto request) {
+    public CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImageFile) {
         // 1. 유효성 검사(이메일 및 전화번호 중복 확인)
         validateEmailDuplication(request.getEmail());
         validatePhoneDuplication(request.getPhone());
-        
+
         // 2. 유효성 검사(비밀번호 일치 여부 확인)
         validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
-        
-        // 3. 저장 정보 확인
+
+        // 3. 이미지 정보 확인
+        String profileImagePath = profileImageFile.isEmpty() ?
+                employeeProfileImageService.getDefaultFile()
+//                : employeeProfileImageService.saveFile(request.getId(), profileImageFile);
+                : employeeProfileImageService.saveFile(profileImageFile);
+
+        // 4. 저장 정보 확인
         Department department = getDepartmentByType(request.getDepartmentType());
         Position position = getPositionByType(STAFF);
         Status status = getStatusByType(JOINED);
 
-        // 4. 직급별 연차 개수 확인
+        // 5. 직급별 연차 개수 확인
         DayOffByPosition dayOffByPosition = getDayOffByPosition(position.getId());
 
-        // 5. 회원 정보 저장
+        // 6. 회원 정보 저장
         Employee employee = employeeRepository.save(Employee.builder()
+                .profileImagePath(profileImagePath)
                 .position(position)
                 .department(department)
                 .status(status)
@@ -129,11 +139,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                             .build());
         }
 
-        HashMap<String, Object> response = new HashMap<>();
-        response.put("id", employeeId);
-        response.put("token", token);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id", employeeId);
+        map.put("token", token);
 
-        return responseService.success(response, SUCCESS);
+        return responseService.success(map, SUCCESS);
     }
 
     /** 입력받은 비밀번호가 올바른지 확인 */
