@@ -19,4 +19,7 @@ public interface ResponseService {
 
     // 실패 응답
     <T> CommonResponse<T> failure(ErrorCode errorCode);
+
+    // 벨리데이션 실패 응답
+    <T> CommonResponse<T> failure(String errorMessage);
 }

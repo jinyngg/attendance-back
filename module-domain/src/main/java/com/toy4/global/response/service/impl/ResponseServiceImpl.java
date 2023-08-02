@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResponseServiceImpl implements ResponseService {
 
+    private final String INVALID_REQUEST = "INVALID_REQUEST";
+
     @Override
     public <T> CommonResponse<T> success(T data, SuccessCode successCode) {
         return CommonResponse.<T>builder()
@@ -45,6 +47,15 @@ public class ResponseServiceImpl implements ResponseService {
                 .success(false)
                 .code(errorCode.toString())
                 .message(errorCode.getMessage())
+                .build();
+    }
+
+    @Override
+    public <T> CommonResponse<T> failure(String errorMessage) {
+        return CommonResponse.<T>builder()
+                .success(false)
+                .code(INVALID_REQUEST)
+                .message(errorMessage)
                 .build();
     }
 }

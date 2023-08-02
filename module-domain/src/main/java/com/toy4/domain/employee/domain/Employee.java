@@ -23,6 +23,9 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Employee extends BaseEntity {
 
+  @Column(length = 255)
+  private String profileImagePath;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "position_id", referencedColumnName = "id", nullable = false)
   private Position position;

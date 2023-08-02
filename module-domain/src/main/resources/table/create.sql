@@ -2,7 +2,7 @@
 CREATE TABLE position
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    type       VARCHAR(20)  NOT NULL,
+    type       VARCHAR(50) UNIQUE NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     updated_at TIMESTAMP   NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -11,7 +11,7 @@ CREATE TABLE position
 CREATE TABLE status
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    type       VARCHAR(20) NOT NULL,
+    type       VARCHAR(20) UNIQUE NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     updated_at TIMESTAMP   NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -20,10 +20,20 @@ CREATE TABLE status
 CREATE TABLE department
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    type       VARCHAR(20)  NOT NULL,
+    type       VARCHAR(20) UNIQUE NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     updated_at TIMESTAMP   NOT NULL
 );
+
+-- 연차
+CREATE TABLE day_off
+(
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    type        VARCHAR(20) NOT NULL,
+    amount      TINYINT   NOT NULL,
+    created_at  TIMESTAMP NOT NULL,
+    updated_at  TIMESTAMP NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 회원 테이블 생성
 CREATE TABLE employee
@@ -35,12 +45,13 @@ CREATE TABLE employee
     name             VARCHAR(100) NOT NULL COMMENT '이름',
     email            VARCHAR(100) NOT NULL UNIQUE COMMENT '이메일',
     password         CHAR(60) NOT NULL COLLATE ascii_bin COMMENT '비밀번호',
+    profile_url    VARCHAR(255) COMMENT '프로필 이미지', -- 추가된 칼럼
     hire_date        DATE NOT NULL COMMENT '입사일',
     quit_date        DATE COMMENT '퇴사일',
     day_off_remains  INT NOT NULL COMMENT '잔여 연차수',
     role             VARCHAR(20) NOT NULL COMMENT '권한',
     phone            VARCHAR(60) NOT NULL COMMENT '전화번호',
-    birthdate        DATE NOT NULL COMMENT '생년월일',
+    birthdate        DATE COMMENT '생년월일',
     zip_address      CHAR(5) COLLATE ascii_bin COMMENT '우편번호',
     road_address     VARCHAR(255) COMMENT '주소1(도로명)',
     detail_address   VARCHAR(255) COMMENT '주소2(상세주소)',
@@ -94,16 +105,6 @@ CREATE TABLE day_off_by_position
     created_at  TIMESTAMP NOT NULL,
     updated_at  TIMESTAMP NOT NULL,
     FOREIGN KEY (position_id) REFERENCES position (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- 연차
-CREATE TABLE day_off
-(
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    type        VARCHAR(20) NOT NULL,
-    amount      TINYINT   NOT NULL,
-    created_at  TIMESTAMP NOT NULL,
-    updated_at  TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 연차 등록요청/응답 이력
