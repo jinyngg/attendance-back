@@ -4,13 +4,12 @@ server:
 
 file.upload.path:
   windows: D:\\attendance\\images\\
-  linux: /opt/attendance/images/
+  linux: ~/attendance/images/
 
 
 logging.level.org.hibernate:
   sql: DEBUG
   type.descriptor.sql.BasicBinder: TRACE
-
 
 spring:
   servlet:
@@ -51,3 +50,21 @@ spring:
 
   jwt:
     secret: U3ByaW5nIERheSBPZmYgYW5kIER1dHkgUHJvamVjdCBCeSBGYXN0IENhbXB1cyBNaW5pIFByb2VqY3QgNCB0ZWFt
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jinyngg@gmail.com
+    password: ebfrmjupncqpfgcu
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+
+file:
+  upload:
+    path:
+      windows: D:\\attendance\\images\\
+      linux: ~/attendance/images/
+
