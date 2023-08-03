@@ -18,6 +18,7 @@ import lombok.Getter;
 public class EmployeeDto {
 
     private Long id;
+    private String uuid;
 
     private Position position;
     private PositionType positionType;

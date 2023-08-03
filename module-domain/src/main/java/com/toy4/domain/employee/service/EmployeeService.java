@@ -14,8 +14,16 @@ public interface EmployeeService {
 
     // 로그인
     CommonResponse<?> login(EmployeeDto request);
-  
+
+    // 비밀번호 변경 이메일 전송
+    CommonResponse<?> sendPasswordChangeEmail(String email);
+
+    // 비밀번호 변경
+    CommonResponse<?> changePassword(EmployeeDto request, String uuid);
+
+
     CommonResponse<?> updateEmployeeInfo(EmployeeDto employeeDto, MultipartFile file);
     CommonResponse<?> getEmployeeInfo(Long id);
     CommonResponse<?> getMyPage(Long id);
+
 }
