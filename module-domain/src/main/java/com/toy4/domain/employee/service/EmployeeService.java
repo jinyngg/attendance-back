@@ -25,5 +25,6 @@ public interface EmployeeService {
     CommonResponse<?> updateEmployeeInfo(EmployeeDto employeeDto, MultipartFile file);
     CommonResponse<?> getEmployeeInfo(Long id);
     CommonResponse<?> getMyPage(Long id);
+    CommonResponse<?> getEmployeeDayOffInfo();
 
 }
