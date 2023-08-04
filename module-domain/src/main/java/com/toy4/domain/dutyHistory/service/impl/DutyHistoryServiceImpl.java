@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.toy4.domain.dutyHistory.domain.DutyHistory;
 import com.toy4.domain.dutyHistory.dto.ApprovedDutyResponse;
+import com.toy4.domain.dutyHistory.dto.DutyHistoriesResponse;
 import com.toy4.domain.dutyHistory.dto.DutyHistoryDto;
-import com.toy4.domain.dutyHistory.dto.DutyHistoryResponse;
 import com.toy4.domain.dutyHistory.exception.DutyHistoryException;
 import com.toy4.domain.dutyHistory.repository.DutyHistoryRepository;
 import com.toy4.domain.dutyHistory.service.DutyHistoryService;
@@ -43,7 +43,7 @@ public class DutyHistoryServiceImpl implements DutyHistoryService {
 			RequestStatus.ACCEPTED);
 
 		if (approveDuties.isEmpty()) {
-			return responseService.failure(ErrorCode.DUTY_HISTORIES_NOT_FOUND);
+			return responseService.failure(ErrorCode.EMPLOYEE_APPROVED_DUTY_NOT_FOUND);
 		}
 
 		List<ApprovedDutyResponse> responses = approveDuties.stream()
@@ -62,8 +62,8 @@ public class DutyHistoryServiceImpl implements DutyHistoryService {
 			return responseService.failure(ErrorCode.DUTY_HISTORIES_NOT_FOUND);
 		}
 
-		List<DutyHistoryResponse> responses = dutyHistories.stream()
-			.map(DutyHistoryResponse::from)
+		List<DutyHistoriesResponse> responses = dutyHistories.stream()
+			.map(DutyHistoriesResponse::from)
 			.collect(Collectors.toList());
 
 		return responseService.successList(responses, SUCCESS);
