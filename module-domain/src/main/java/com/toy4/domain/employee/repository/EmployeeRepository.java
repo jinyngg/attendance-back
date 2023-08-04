@@ -20,4 +20,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
   // 이메일로 회원 조회
   Optional<Employee> findByEmail(String email);
+
+  // 인증토큰으로 회원 조회
+  Optional<Employee> findByAuthToken(String authToken);
 }

@@ -1,6 +1,8 @@
 package com.toy4.domain.employee.controller;
 
+import com.toy4.domain.employee.dto.request.ChangePasswordRequest;
 import com.toy4.domain.employee.dto.request.EmailDuplicateCheckRequest;
+import com.toy4.domain.employee.dto.request.FindPasswordRequest;
 import com.toy4.domain.employee.dto.request.LoginRequest;
 import com.toy4.domain.employee.dto.request.SignupRequest;
 import com.toy4.domain.employee.exception.EmployeeException;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +79,29 @@ public class EmployeeAccountController {
             HttpStatus httpStatus = errorCode.getHttpStatus();
             return ResponseEntity.status(httpStatus).body(responseService.failure(errorCode));
         }
+    }
+
+    @PostMapping("/users/password/find")
+    public ResponseEntity<?> sendPasswordChangeEmail(
+            @RequestBody FindPasswordRequest request
+    ) {
+        CommonResponse<?> response = employeeService.sendPasswordChangeEmail(request.getEmail());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/users/{authToken}/password/change")
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @PathVariable String authToken
+            , BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = getErrorMessageFromBindingResult(bindingResult);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.failure(errorMessage));
+        }
+
+        CommonResponse<?> response = employeeService.changePassword(ChangePasswordRequest.to(request), authToken);
+        return ResponseEntity.ok(response);
     }
 
     /** bindingResult ErrorMessage 반환 */

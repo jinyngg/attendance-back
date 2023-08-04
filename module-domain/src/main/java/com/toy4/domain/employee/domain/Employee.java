@@ -21,62 +21,73 @@ import java.time.LocalDate;
 @Entity
 public class Employee extends BaseEntity {
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "position_id", referencedColumnName = "id", nullable = false)
-  private Position position;
+    @Column(length = 255, nullable = false)
+    private String authToken;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "department_id", referencedColumnName = "id", nullable = false)
-  private Department department;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id", referencedColumnName = "id", nullable = false)
+    private Position position;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
-  private Status status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", referencedColumnName = "id", nullable = false)
+    private Department department;
 
-  @Column(name = "name", nullable = false)
-  private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
+    private Status status;
 
-  @Column(name = "email", unique = true, nullable = false)
-  private String email;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-  @Column(name = "password", nullable = false)
-  private String password;
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
 
-  @Column(length = 255)
-  private String profileImagePath;
+    @Column(name = "password", nullable = false)
+    private String password;
 
-  @Column(name = "hire_date", nullable = false)
-  private LocalDate hireDate;
+    @Column(length = 255)
+    private String profileImagePath;
 
-  @Column(name = "quit_date")
-  private LocalDate quitDate;
+    @Column(name = "hire_date", nullable = false)
+    private LocalDate hireDate;
 
-  @Column(name = "day_off_remains", nullable = false)
-  private Float dayOffRemains;
+    @Column(name = "quit_date")
+    private LocalDate quitDate;
 
-  @Column(name = "role", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private EmployeeRole role;
+    @Column(name = "day_off_remains", nullable = false)
+    private Float dayOffRemains;
 
-  @Column(name = "phone", nullable = false)
-  private String phone;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private EmployeeRole role;
 
-  @Column(name = "birthdate", nullable = false)
-  private LocalDate birthdate;
+    @Column(name = "phone", nullable = false)
+    private String phone;
 
-  @Column(name = "zip_address", columnDefinition = "CHAR(5)")
-  private String zipAddress;
+    @Column(name = "birthdate", nullable = false)
+    private LocalDate birthdate;
 
-  @Column(name = "road_address", length = 255)
-  private String roadAddress;
+    @Column(name = "zip_address", columnDefinition = "CHAR(5)")
+    private String zipAddress;
 
-  @Column(name = "detail_address", length = 255)
-  private String detailAddress;
+    @Column(name = "road_address", length = 255)
+    private String roadAddress;
 
-  public void update(EmployeeDto employeeDto, String profileImagePath) {
-    this.department = employeeDto.getDepartment();
-    this.profileImagePath= profileImagePath;
-    this.phone = employeeDto.getPhone();
-  }
+    @Column(name = "detail_address", length = 255)
+    private String detailAddress;
+
+    public void update(EmployeeDto employeeDto, String profileImagePath) {
+        this.department = employeeDto.getDepartment();
+        this.profileImagePath = profileImagePath;
+        this.phone = employeeDto.getPhone();
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateNewAuthToken(String uuid) {
+        this.authToken = uuid;
+    }
 
 }
