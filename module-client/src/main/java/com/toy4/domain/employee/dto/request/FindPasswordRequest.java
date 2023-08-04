@@ -10,15 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+public class FindPasswordRequest {
 
     private String email;
-    private String password;
 
-    public static EmployeeDto to(LoginRequest request) {
+    public static EmployeeDto to(FindPasswordRequest request) {
         return EmployeeDto.builder()
                 .email(request.getEmail())
-                .password(request.getPassword())
                 .build();
     }
 }
