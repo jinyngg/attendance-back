@@ -17,7 +17,7 @@ public enum DayOffType {
     SPECIAL_DAY_OFF("특별 휴가")
     ;
 
-    private final String type;
+    private final String description;
 
     public boolean isHalfDayOff() {
         return (this == FIRST_HALF_DAY_OFF || this == SECOND_HALF_DAY_OFF);
@@ -25,7 +25,7 @@ public enum DayOffType {
 
     public static DayOffType getByTypeString(String type) {
         return Arrays.stream(values())
-                .filter(dayOffType -> dayOffType.getType().equals(type))
+                .filter(dayOffType -> dayOffType.getDescription().equals(type))
                 .findFirst()
                 .orElseThrow(() -> new DayOffException(ErrorCode.INVALID_DAY_OFF_TYPE));
     }
