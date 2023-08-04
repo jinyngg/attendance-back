@@ -48,6 +48,11 @@ public enum ErrorCode {
     DUTY_HISTORIES_NOT_FOUND(HttpStatus.BAD_REQUEST, "당직 리스트 내역이 존재하지 않습니다."),
     EMPLOYEE_APPROVED_DUTY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 직원의 승인된 당직 내역이 존재하지 않습니다.");
 
+    INVERTED_DAY_OFF_RANGE(HttpStatus.BAD_REQUEST, "종료 날짜는 시작 날짜와 같거나 이후이어야 합니다."),
+    RANGED_HALF_DAY_OFF(HttpStatus.BAD_REQUEST, "반차의 시작 날짜는 종료 날짜와 같아야 합니다."),
+    DAY_OFF_REMAINS_OVER(HttpStatus.BAD_REQUEST, "사용 가능한 연차의 개수보다 많이 신청하였습니다.")
+    ;
+
     private final HttpStatus httpStatus;
     private final String message;
     public static ErrorCode getByErrorCodeName(String errorCodeName) {
