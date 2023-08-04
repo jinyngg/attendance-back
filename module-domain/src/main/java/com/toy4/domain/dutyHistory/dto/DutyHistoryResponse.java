@@ -2,11 +2,7 @@ package com.toy4.domain.dutyHistory.dto;
 
 import com.toy4.domain.dutyHistory.domain.DutyHistory;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 
-@Getter
-@Builder
 @AllArgsConstructor
 public class DutyHistoryResponse {
 
