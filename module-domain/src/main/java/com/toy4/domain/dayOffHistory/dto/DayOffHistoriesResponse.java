@@ -33,7 +33,7 @@ public class DayOffHistoriesResponse {
 			.hireDate(dayOffHistory.getEmployee().getHireDate().format(formatter))
 			.dayOffHistoryId(dayOffHistory.getId())
 			.requestDate(dayOffHistory.getCreatedAt().format(formatter))
-			.type(dayOffHistory.getDayOff().getType().name())
+			.type(dayOffHistory.getDayOff().getType().getDescription())
 			.status(dayOffHistory.getStatus().getDescription())
 			.startDate(dayOffHistory.getStartDate().format(formatter))
 			.endDate(dayOffHistory.getEndDate().format(formatter))
