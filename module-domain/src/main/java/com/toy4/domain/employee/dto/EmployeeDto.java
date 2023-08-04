@@ -52,5 +52,7 @@ public class EmployeeDto {
     private LocalDateTime updatedAt;
 
     private TokenDto tokenDto;
+    public void addDepartment(Department department) { this.department = department;}
+    public void addPosition(Position position) {this.position = position;}
 
 }
