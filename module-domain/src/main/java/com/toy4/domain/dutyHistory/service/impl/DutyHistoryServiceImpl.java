@@ -43,7 +43,7 @@ public class DutyHistoryServiceImpl implements DutyHistoryService {
 			RequestStatus.ACCEPTED);
 
 		if (approveDuties.isEmpty()) {
-			return responseService.failure(ErrorCode.DUTY_HISTORIES_NOT_FOUND);
+			return responseService.failure(ErrorCode.EMPLOYEE_APPROVED_DUTY_NOT_FOUND);
 		}
 
 		List<ApprovedDutyResponse> responses = approveDuties.stream()
