@@ -90,4 +90,14 @@ public class Employee extends BaseEntity {
         this.authToken = uuid;
     }
 
+    public void updateEmployeeInfo (EmployeeDto employeeDto, String profileImagePath) {
+        this.department = employeeDto.getDepartment();
+        this.position = employeeDto.getPosition();
+        this.profileImagePath= profileImagePath;
+        this.phone = employeeDto.getPhone();
+    }
+
+    public void updateDayOffRemains(float remainingDaysOff) {
+        this.dayOffRemains = remainingDaysOff;
+    }
 }
