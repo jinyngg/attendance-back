@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/day-offs")
 @RequiredArgsConstructor
 @RestController
-public class DayOffHistoryController {
+public class DayOffHistoryAdminController {
 
 	private final DayOffHistoryService dayOffHistoryService;
 

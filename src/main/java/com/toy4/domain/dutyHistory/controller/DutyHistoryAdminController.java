@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/duty")
 @RequiredArgsConstructor
 @RestController
-public class DutyHistoryController {
+public class DutyHistoryAdminController {
 
 	private final DutyHistoryService dutyHistoryService;
 
