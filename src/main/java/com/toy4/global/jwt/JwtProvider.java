@@ -1,17 +1,12 @@
 package com.toy4.global.jwt;
 
-import com.toy4.global.token.dto.TokenDto;
 import com.toy4.domain.employee.type.EmployeeRole;
 import com.toy4.global.security.CustomUserDetailsService;
+import com.toy4.global.token.dto.TokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
-import javax.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,8 +14,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Key;
+import java.util.Date;
+
 @Component
-@RequiredArgsConstructor
 public class JwtProvider {
 
     private static final String TOKEN_HEADER = "Authorization";
@@ -31,9 +29,12 @@ public class JwtProvider {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 14 * 24 * 60 * 60 * 1000L; // 14 day
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final Key secretKey;
 
-    @Value("${spring.jwt.secret}")
-    private String secretKey;
+    public JwtProvider(CustomUserDetailsService customUserDetailsService, KeyMaker keyMaker) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.secretKey = keyMaker.getKey();
+    }
 
     /** 토큰 생성 */
     public TokenDto generateToken(String email, EmployeeRole role) {
@@ -47,13 +48,13 @@ public class JwtProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .signWith(secretKey)
                 .compact();
 
         String refreshToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .signWith(secretKey)
                 .compact();
 
         return TokenDto.builder()
@@ -101,7 +102,7 @@ public class JwtProvider {
     /** JWT 토큰 복호화 후 가져오기 */
     public Claims parseClaims(String token) {
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJwt(token).getBody();
         } catch (ExpiredJwtException e) {
 //            throw new RuntimeException("토큰이 만료되었습니다.");
             return e.getClaims();
