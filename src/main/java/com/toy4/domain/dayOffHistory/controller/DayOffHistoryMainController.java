@@ -1,5 +1,6 @@
-package com.toy4.domain.dayOffHistory;
+package com.toy4.domain.dayOffHistory.controller;
 
+import com.toy4.domain.dayOffHistory.dto.DayOffRegistrationRequest;
 import com.toy4.domain.dayOffHistory.service.DayOffHistoryMainService;
 import com.toy4.domain.dayoff.exception.DayOffException;
 import com.toy4.global.response.service.ResponseService;

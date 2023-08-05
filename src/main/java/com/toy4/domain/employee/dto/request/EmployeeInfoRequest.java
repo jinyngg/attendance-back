@@ -1,4 +1,4 @@
-package com.toy4.domain.employee.dto;
+package com.toy4.domain.employee.dto.request;
 
 import java.time.LocalDate;
 
@@ -8,6 +8,7 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toy4.domain.department.type.DepartmentType;
+import com.toy4.domain.employee.dto.EmployeeDto;
 import com.toy4.domain.position.type.PositionType;
 
 import lombok.AccessLevel;

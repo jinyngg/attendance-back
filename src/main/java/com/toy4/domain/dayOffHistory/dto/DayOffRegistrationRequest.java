@@ -1,4 +1,4 @@
-package com.toy4.domain.dayOffHistory;
+package com.toy4.domain.dayOffHistory.dto;
 
 import com.toy4.domain.dayOffHistory.dto.DayOffRegistrationDto;
 import com.toy4.domain.dayoff.type.DayOffType;

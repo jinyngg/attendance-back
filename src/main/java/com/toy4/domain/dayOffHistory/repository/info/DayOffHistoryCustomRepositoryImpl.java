@@ -10,7 +10,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.toy4.domain.dayOffHistory.domain.QDayOffHistory;
 import com.toy4.domain.employee.domain.QEmployee;
-import com.toy4.domain.employee.dto.EmployeeDayOffInfoResponse;
+import com.toy4.domain.employee.dto.response.EmployeeDayOffInfoResponse;
 
 import lombok.RequiredArgsConstructor;
 

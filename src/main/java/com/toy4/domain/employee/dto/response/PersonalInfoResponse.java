@@ -1,4 +1,4 @@
-package com.toy4.domain.employee.dto;
+package com.toy4.domain.employee.dto.response;
 
 import static com.toy4.global.date.DateFormatter.*;
 import com.toy4.domain.employee.domain.Employee;

@@ -1,4 +1,4 @@
-package com.toy4.domain.employee.dto;
+package com.toy4.domain.employee.dto.response;
 
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.position.type.PositionType;

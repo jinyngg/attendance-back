@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.toy4.domain.dayOffHistory.service.DayOffHistoryService;
 import com.toy4.domain.dutyHistory.service.DutyHistoryService;
-import com.toy4.domain.employee.dto.EmployeeInfoRequest;
+import com.toy4.domain.employee.dto.request.EmployeeInfoRequest;
 import com.toy4.domain.employee.service.EmployeeService;
 import com.toy4.global.response.dto.CommonResponse;
 

@@ -21,13 +21,13 @@ public class DayOffHistoryController {
 
 	private final DayOffHistoryService dayOffHistoryService;
 
-	@GetMapping("/")
+	@GetMapping
 	public ResponseEntity<?> getDayOffs() {
 		CommonResponse<?> response = dayOffHistoryService.getDayOffs();
 		return ResponseEntity.ok(response);
 	}
 
-	@PutMapping("/")
+	@PutMapping
 	public ResponseEntity<?> updateStatusDayOff(
 		@Validated @RequestBody DayOffHistoryRequest request) {
 		CommonResponse<?> response = dayOffHistoryService.updateStatusDayOff(DayOffHistoryRequest.to(request));

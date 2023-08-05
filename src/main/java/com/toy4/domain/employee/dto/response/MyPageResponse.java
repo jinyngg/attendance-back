@@ -1,4 +1,4 @@
-package com.toy4.domain.employee.dto;
+package com.toy4.domain.employee.dto.response;
 
 import java.time.LocalDate;
 
