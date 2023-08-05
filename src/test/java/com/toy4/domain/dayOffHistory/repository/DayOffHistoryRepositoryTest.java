@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,5 +92,31 @@ class DayOffHistoryRepositoryTest {
 
         DayOffHistory dayOffHistory = dayOffHistories.get(0);
         assertThat(dayOffHistory).isSameAs(dayOffHistorySaved);
+    }
+
+    @DisplayName("[실패] 당직 날짜와 겹침 존재")
+    @Test
+    void whenOverlappedDate_thenPresent() {
+        final Long employeeId = 1L;
+        LocalDate requestedDutyDate = LocalDate.of(2023, 7, 31);
+
+        for (int i = 0; i < 3; ++i) {
+            requestedDutyDate = requestedDutyDate.plusDays(1);
+            Optional<DayOffHistory> overlappedDate = dayOffHistoryRepository.findOverlappedDate(employeeId, requestedDutyDate);
+            assertThat(overlappedDate).isPresent();
+        }
+    }
+
+    @DisplayName("[성공] 당직 날짜 겹침 없음")
+    @Test
+    void whenNotOverlappedDate_thenEmpty() {
+        final Long employeeId = 1L;
+        LocalDate requestedDutyDate = LocalDate.of(2023, 7, 27);
+
+        for (int i = 0; i < 2; ++i) {
+            requestedDutyDate = requestedDutyDate.plusDays(4);
+            Optional<DayOffHistory> overlappedDate = dayOffHistoryRepository.findOverlappedDate(employeeId, requestedDutyDate);
+            assertThat(overlappedDate).isEmpty();
+        }
     }
 }
