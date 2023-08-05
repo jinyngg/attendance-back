@@ -26,4 +26,9 @@ public interface DutyHistoryRepository extends JpaRepository<DutyHistory, Long> 
 
     List<DutyHistory> findAll();
     Optional<DutyHistory> findById(Long id);
+
+    @Query("SELECT s FROM DutyHistory s " +
+           "WHERE s.employee.id = :employeeId " +
+             "AND s.date = :date")
+    Optional<DutyHistory> findOverlappedDate(Long employeeId, LocalDate date);
 }
