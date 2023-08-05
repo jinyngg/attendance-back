@@ -59,3 +59,7 @@ dependencies {
 			"javax.annotation:javax.annotation-api",
 			"com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 }
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

@@ -23,8 +23,8 @@ spring:
   sql:
     init:
       mode: embedded
-      schema-locations: classpath:db/schema.sql
-      data-locations: classpath:db/data.sql
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
 
   h2:
     console:
