@@ -11,8 +11,8 @@ import static com.toy4.global.response.type.SuccessCode.COMPLETE_PERSONAL_INFO_U
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_SIGNUP;
 import static com.toy4.global.response.type.SuccessCode.SUCCESS;
 
-import com.toy4.domain.RefreshToken.domain.RefreshToken;
-import com.toy4.domain.RefreshToken.repository.RefreshTokenRepository;
+import com.toy4.domain.refreshToken.domain.RefreshToken;
+import com.toy4.domain.refreshToken.repository.RefreshTokenRepository;
 import com.toy4.domain.dayOffByPosition.domain.DayOffByPosition;
 import com.toy4.domain.dayOffByPosition.exception.DayOffByPositionException;
 import com.toy4.domain.dayOffByPosition.repository.DayOffByPositionRepository;
@@ -43,7 +43,7 @@ import com.toy4.global.jwt.JwtProvider;
 import com.toy4.global.response.dto.CommonResponse;
 import com.toy4.global.response.service.ResponseService;
 import com.toy4.global.response.type.ErrorCode;
-import com.toy4.global.toekn.dto.TokenDto;
+import com.toy4.global.token.dto.TokenDto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;

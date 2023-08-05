@@ -1,6 +1,6 @@
 package com.toy4.global.jwt;
 
-import com.toy4.global.toekn.dto.TokenDto;
+import com.toy4.global.token.dto.TokenDto;
 import com.toy4.domain.employee.type.EmployeeRole;
 import com.toy4.global.security.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;

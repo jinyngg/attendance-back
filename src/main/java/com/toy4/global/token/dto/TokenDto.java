@@ -1,4 +1,4 @@
-package com.toy4.global.toekn.dto;
+package com.toy4.global.token.dto;
 
 import lombok.Builder;
 import lombok.Getter;

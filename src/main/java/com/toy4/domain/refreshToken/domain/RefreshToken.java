@@ -1,4 +1,4 @@
-package com.toy4.domain.RefreshToken.domain;
+package com.toy4.domain.refreshToken.domain;
 
 import com.toy4.domain.BaseEntity;
 import javax.persistence.Column;

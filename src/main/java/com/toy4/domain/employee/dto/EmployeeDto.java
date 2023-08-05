@@ -7,7 +7,7 @@ import com.toy4.domain.position.domain.Position;
 import com.toy4.domain.position.type.PositionType;
 import com.toy4.domain.status.domain.Status;
 import com.toy4.domain.status.type.StatusType;
-import com.toy4.global.toekn.dto.TokenDto;
+import com.toy4.global.token.dto.TokenDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;

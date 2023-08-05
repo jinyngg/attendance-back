@@ -1,6 +1,6 @@
-package com.toy4.domain.RefreshToken.repository;
+package com.toy4.domain.refreshToken.repository;
 
-import com.toy4.domain.RefreshToken.domain.RefreshToken;
+import com.toy4.domain.refreshToken.domain.RefreshToken;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
