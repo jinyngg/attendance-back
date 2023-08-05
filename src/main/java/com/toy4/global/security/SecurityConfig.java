@@ -41,6 +41,9 @@ public class SecurityConfig {
         // JWT 인증 필터 적용
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // h2 console 사용을 위해 frame 허용
+        http.headers().frameOptions().disable();
+
         return http.build();
     }
 
