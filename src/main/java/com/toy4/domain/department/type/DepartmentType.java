@@ -11,20 +11,20 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum DepartmentType {
-
-  DEVELOPMENT("개발팀"),
-  PLANNING("기획팀"),
-  SALES("영업팀"),
-  HR("인사팀"),
-  ACCOUNTING("회계팀"),
-  LEGAL("법무팀")
+  AUTOMOBILE("순양자동차"),
+  STORE("순양백화점"),
+  SECURITIES("순양증권"),
+  SEMICON("순양반도체"),
+  MEDICAL("순양의료원"),
+  MICRO("순양마이크로"),
+  UNKNOWN("부서없음")
   ;
 
   private final String description;
 
   public static DepartmentType getByTypeString(String type) {
     return Arrays.stream(values())
-        .filter(departmentType -> departmentType.description.equals(type))
+        .filter(departmentType -> departmentType.getDescription().equals(type))
         .findFirst()
         .orElseThrow(() -> new DayOffException(ErrorCode.INVALID_DAY_OFF_TYPE));
   }
