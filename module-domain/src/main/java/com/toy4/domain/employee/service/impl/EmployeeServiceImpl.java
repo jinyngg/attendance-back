@@ -3,15 +3,7 @@ package com.toy4.domain.employee.service.impl;
 import static com.toy4.domain.employee.type.EmployeeRole.USER;
 import static com.toy4.domain.position.type.PositionType.STAFF;
 import static com.toy4.domain.status.type.StatusType.JOINED;
-import static com.toy4.global.response.type.ErrorCode.ALREADY_EXISTS_EMAIL;
-import static com.toy4.global.response.type.ErrorCode.ALREADY_EXISTS_PHONE;
-import static com.toy4.global.response.type.ErrorCode.INVALID_EMAIL;
-import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_DEPARTMENT_TYPE;
-import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_ID;
-import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_TYPE;
-import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_STATUS_TYPE;
-import static com.toy4.global.response.type.ErrorCode.LOAD_USER_FAILED;
-import static com.toy4.global.response.type.ErrorCode.MISMATCH_PASSWORD;
+import static com.toy4.global.response.type.ErrorCode.*;
 import static com.toy4.global.response.type.SuccessCode.AVAILABLE_EMAIL;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_CHANGE_PASSWORD;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_EMAIL_TRANSMISSION;
@@ -22,11 +14,13 @@ import static com.toy4.global.response.type.SuccessCode.SUCCESS;
 import com.toy4.domain.dayOffByPosition.domain.DayOffByPosition;
 import com.toy4.domain.dayOffByPosition.exception.DayOffByPositionException;
 import com.toy4.domain.dayOffByPosition.repository.DayOffByPositionRepository;
+import com.toy4.domain.dayOffHistory.repository.info.DayOffHistoryCustomRepository;
 import com.toy4.domain.department.domain.Department;
 import com.toy4.domain.department.exception.DepartmentException;
 import com.toy4.domain.department.repository.DepartmentRepository;
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.domain.Employee;
+import com.toy4.domain.employee.dto.EmployeeDayOffInfoResponse;
 import com.toy4.domain.employee.dto.EmployeeDto;
 import com.toy4.domain.employee.dto.MyPageResponse;
 import com.toy4.domain.employee.dto.PersonalInfoResponse;
@@ -48,6 +42,9 @@ import com.toy4.global.jwt.JwtProvider;
 import com.toy4.global.response.dto.CommonResponse;
 import com.toy4.global.response.service.ResponseService;
 import com.toy4.global.response.type.ErrorCode;
+import com.toy4.global.toekn.dto.TokenDto;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,6 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final StatusRepository statusRepository;
+    private final DayOffHistoryCustomRepository dayOffHistoryCustomRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailComponents mailComponents;
     private final JwtProvider jwtProvider;
@@ -76,20 +74,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     public CommonResponse<?> updateEmployeeInfo(EmployeeDto employeeDto,
             MultipartFile profileImageFile) {
         Employee employee = employeeRepository.findById(employeeDto.getId())
-                .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+            .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
 
         String profileImagePath = employeeProfileImageService.getDefaultFile();
 
         if (!profileImageFile.isEmpty()) {
             profileImagePath = employeeProfileImageService.saveFile(profileImageFile);
         }
-
         employeeProfileImageService.removeIfFileExists(employee.getProfileImagePath());
 
         Department department = getDepartmentByType(employeeDto.getDepartmentType());
         employeeDto.addDepartment(department);
 
-        employee.update(employeeDto, profileImagePath);
+        Position position = getPositionByType(employeeDto.getPositionType());
+        employeeDto.addPosition(position);
+
+        employee.updateEmployeeInfo(employeeDto, profileImagePath);
         employeeRepository.save(employee);
 
         return responseService.success(employee.getId(), COMPLETE_PERSONAL_INFO_UPDATE);
@@ -99,40 +99,53 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(readOnly = true)
     public CommonResponse<?> getEmployeeInfo(Long id) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+            .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+
         PersonalInfoResponse response = PersonalInfoResponse.from(employee);
         return responseService.success(response, SUCCESS);
     }
 
+	@Override
+	public CommonResponse<?> getMyPage(Long id) {
+		Employee employee = employeeRepository.findById(id)
+			.orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+		MyPageResponse response = MyPageResponse.from(employee);
+		return responseService.success(response, SUCCESS);
+	}
+
     @Override
-    public CommonResponse<?> getMyPage(Long id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
-        MyPageResponse response = MyPageResponse.from(employee);
-        return responseService.success(response, SUCCESS);
+    @Transactional(readOnly = true)
+    public CommonResponse<?> getEmployeeDayOffInfo() {
+        List<EmployeeDayOffInfoResponse> employeeDayOffInfos = dayOffHistoryCustomRepository.getEmployeeDayOff();
+
+        if (employeeDayOffInfos.isEmpty()) {
+            return responseService.failure(DAY_OFF_HISTORIES_NOT_FOUND);
+        }
+
+        return responseService.success(employeeDayOffInfos, SUCCESS);
     }
 
+   
+   @Override
+   public CommonResponse<?> validateUniqueEmail(String email) {
+       // 1. 유효성 검사(이메일 중복 확인)
+       validateEmailDuplication(email);
+       return responseService.successWithNoContent(AVAILABLE_EMAIL);
+   }
 
-    @Override
-    public CommonResponse<?> validateUniqueEmail(String email) {
-        // 1. 유효성 검사(이메일 중복 확인)
-        validateEmailDuplication(email);
-        return responseService.successWithNoContent(AVAILABLE_EMAIL);
-    }
+   @Override
+   @Transactional
+   public CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImageFile) {
+       // 1. 유효성 검사(이메일 및 전화번호 중복 확인)
+       validateEmailDuplication(request.getEmail());
+       validatePhoneDuplication(request.getPhone());
 
-    @Override
-    @Transactional
-    public CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImageFile) {
-        // 1. 유효성 검사(이메일 및 전화번호 중복 확인)
-        validateEmailDuplication(request.getEmail());
-        validatePhoneDuplication(request.getPhone());
+       // 2. 유효성 검사(비밀번호 일치 여부 확인)
+       validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
 
-        // 2. 유효성 검사(비밀번호 일치 여부 확인)
-        validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
-
-        // 3. 이미지 정보 확인
-        String profileImagePath = profileImageFile.isEmpty() ?
-                employeeProfileImageService.getDefaultFile()
+       // 3. 이미지 정보 확인
+       String profileImagePath = profileImageFile.isEmpty() ?
+               employeeProfileImageService.getDefaultFile()
 //               : employeeProfileImageService.saveFile(request.getId(), profileImageFile);
                 : employeeProfileImageService.saveFile(profileImageFile);
 

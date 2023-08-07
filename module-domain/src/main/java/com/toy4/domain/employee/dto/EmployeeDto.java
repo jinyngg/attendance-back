@@ -53,6 +53,8 @@ public class EmployeeDto {
     private LocalDateTime lastLoginAt;
 
     private TokenDto tokenDto;
+    public void addDepartment(Department department) { this.department = department;}
+    public void addPosition(Position position) {this.position = position;}
 
     public void addDepartment(Department department) {
         this.department = department;

@@ -1,6 +1,6 @@
 package com.toy4.domain.employee.dto;
 
-import java.time.LocalDate;
+import static com.toy4.global.date.DateFormatter.*;
 import com.toy4.domain.employee.domain.Employee;
 
 import lombok.Builder;
@@ -15,7 +15,7 @@ import lombok.Getter;
 	private String name;
 	private String email;
 	private String phone;
-	private LocalDate hireDate;
+	private String hireDate;
 	private String profilePath;
 
 	public static PersonalInfoResponse from(Employee employee) {
@@ -25,7 +25,7 @@ import lombok.Getter;
 			.name(employee.getName())
 			.email(employee.getEmail())
 			.phone(employee.getPhone())
-			.hireDate(employee.getHireDate())
+			.hireDate(employee.getHireDate().format(formatter))
 			.profilePath(employee.getProfileImagePath())
 			.build();
 	}

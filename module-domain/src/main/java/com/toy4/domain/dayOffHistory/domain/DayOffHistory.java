@@ -1,6 +1,7 @@
 package com.toy4.domain.dayOffHistory.domain;
 
 import com.toy4.domain.BaseEntity;
+import com.toy4.domain.dayOffHistory.dto.DayOffHistoryDto;
 import com.toy4.domain.dayOffHistory.dto.DayOffRegistrationDto;
 import com.toy4.domain.dayoff.domain.DayOff;
 import com.toy4.domain.employee.domain.Employee;
@@ -48,5 +49,8 @@ public class DayOffHistory extends BaseEntity {
                 .totalAmount(amount)
                 .reason(dto.getReason())
                 .build();
+    }
+    public void updateStatusDayOff(DayOffHistoryDto dto) {
+        this.status = dto.getStatus();
     }
 }

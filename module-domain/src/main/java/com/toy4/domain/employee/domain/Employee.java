@@ -65,7 +65,7 @@ public class Employee extends BaseEntity {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "birthdate", nullable = false)
+    @Column(name = "birthdate")
     private LocalDate birthdate;
 
     @Column(name = "zip_address", columnDefinition = "CHAR(5)")
@@ -94,7 +94,19 @@ public class Employee extends BaseEntity {
         this.authToken = uuid;
     }
 
+
     public void updateLastLoginAt() {
         this.lastLoginAt = LocalDateTime.now();
+    }
+  
+    public void updateEmployeeInfo (EmployeeDto employeeDto, String profileImagePath) {
+        this.department = employeeDto.getDepartment();
+        this.position = employeeDto.getPosition();
+        this.profileImagePath= profileImagePath;
+        this.phone = employeeDto.getPhone();
+    }
+
+    public void updateDayOffRemains(float remainingDaysOff) {
+        this.dayOffRemains = remainingDaysOff;
     }
 }

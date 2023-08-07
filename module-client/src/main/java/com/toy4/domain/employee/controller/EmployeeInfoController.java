@@ -1,5 +1,7 @@
 package com.toy4.domain.employee.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.toy4.domain.employee.service.EmployeeService;
 import com.toy4.domain.employee.dto.request.PersonalInfoRequest;
+import com.toy4.domain.schedule.ScheduleMainService;
+import com.toy4.domain.schedule.ScheduleResponse;
 import com.toy4.global.response.dto.CommonResponse;
+import com.toy4.global.response.service.ResponseService;
+import com.toy4.global.response.type.SuccessCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,6 +31,8 @@ import lombok.extern.log4j.Log4j2;
 public class EmployeeInfoController {
 
 	private final EmployeeService employeeService;
+	private final ScheduleMainService scheduleMainService;
+	private final ResponseService responseService;
 
 	@GetMapping(path="/personal-info/{id}")
 	public ResponseEntity<?> getPersonalInfo(@PathVariable Long id) {
@@ -45,5 +53,12 @@ public class EmployeeInfoController {
 	public ResponseEntity<?> getMyPage(@PathVariable Long id) {
 		CommonResponse<?> response = employeeService.getMyPage(id);
 		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping(path="/personal-info/schedules/{id}")
+	public CommonResponse<?> getPersonalInfoSchedules(
+		@Valid @PathVariable Long id) {
+		ScheduleResponse response = scheduleMainService.getSchedules(id);
+		return responseService.success(response, SuccessCode.SUCCESS);
 	}
 }
