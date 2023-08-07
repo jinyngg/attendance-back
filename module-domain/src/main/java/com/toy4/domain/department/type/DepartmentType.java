@@ -28,9 +28,4 @@ public enum DepartmentType {
         .findFirst()
         .orElseThrow(() -> new DayOffException(ErrorCode.INVALID_DAY_OFF_TYPE));
   }
-
-  public static String getDescription(String type) {
-    DepartmentType departmentType = getByTypeString(type);
-    return departmentType != null ? departmentType.getDescription() : UNKNOWN.getDescription();
-  }
 }
