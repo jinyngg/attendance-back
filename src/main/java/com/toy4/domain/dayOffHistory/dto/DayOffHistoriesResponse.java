@@ -21,7 +21,9 @@ public class DayOffHistoriesResponse {
 	private String status;
 	private String startDate;
 	private String endDate;
+	private float totalAmount;
 	private String reason;
+
 
 	public static DayOffHistoriesResponse from(DayOffHistory dayOffHistory) {
 
@@ -37,6 +39,7 @@ public class DayOffHistoriesResponse {
 			.status(dayOffHistory.getStatus().getDescription())
 			.startDate(dayOffHistory.getStartDate().format(formatter))
 			.endDate(dayOffHistory.getEndDate().format(formatter))
+			.totalAmount(dayOffHistory.getTotalAmount())
 			.build();
 	}
 }

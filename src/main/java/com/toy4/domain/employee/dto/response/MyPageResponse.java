@@ -1,9 +1,7 @@
 package com.toy4.domain.employee.dto.response;
 
-import java.time.LocalDate;
-
+import static com.toy4.global.date.DateFormatter.*;
 import com.toy4.domain.employee.domain.Employee;
-
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +13,7 @@ public class MyPageResponse {
 	private String department;
 	private String position;
 	private Long employeeId;
-	private LocalDate hireDate;
+	private String hireDate;
 
 	public static MyPageResponse from(Employee employee) {
 		return MyPageResponse.builder()
@@ -23,7 +21,7 @@ public class MyPageResponse {
 			.department(employee.getDepartment().getType().getDescription())
 			.position(employee.getPosition().getType().getDescription())
 			.employeeId(employee.getId())
-			.hireDate(employee.getHireDate())
+			.hireDate(employee.getHireDate().format(formatter))
 			.build();
 	}
 }
