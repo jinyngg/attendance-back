@@ -3,14 +3,11 @@ package com.toy4.domain.employee.controller;
 import com.toy4.domain.employee.dto.request.ChangePasswordRequest;
 import com.toy4.domain.employee.dto.request.EmailDuplicateCheckRequest;
 import com.toy4.domain.employee.dto.request.FindPasswordRequest;
-import com.toy4.domain.employee.dto.request.LoginRequest;
 import com.toy4.domain.employee.dto.request.SignupRequest;
-import com.toy4.domain.employee.exception.EmployeeException;
 import com.toy4.domain.employee.service.EmployeeService;
 import com.toy4.global.aop.EmployeeLock;
 import com.toy4.global.response.dto.CommonResponse;
 import com.toy4.global.response.service.ResponseService;
-import com.toy4.global.response.type.ErrorCode;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -67,19 +64,19 @@ public class EmployeeAccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(
-            @RequestBody LoginRequest request
-    ) {
-        try {
-            CommonResponse<?> response = employeeService.login(LoginRequest.to(request));
-            return ResponseEntity.ok(response);
-        } catch (EmployeeException e) {
-            ErrorCode errorCode = e.getErrorCode();
-            HttpStatus httpStatus = errorCode.getHttpStatus();
-            return ResponseEntity.status(httpStatus).body(responseService.failure(errorCode));
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(
+//            @RequestBody LoginRequest request
+//    ) {
+//        try {
+//            CommonResponse<?> response = employeeService.login(LoginRequest.to(request));
+//            return ResponseEntity.ok(response);
+//        } catch (EmployeeException e) {
+//            ErrorCode errorCode = e.getErrorCode();
+//            HttpStatus httpStatus = errorCode.getHttpStatus();
+//            return ResponseEntity.status(httpStatus).body(responseService.failure(errorCode));
+//        }
+//    }
 
     @PostMapping("/users/password/find")
     public ResponseEntity<?> sendPasswordChangeEmail(
