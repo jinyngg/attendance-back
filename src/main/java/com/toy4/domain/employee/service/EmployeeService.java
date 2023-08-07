@@ -13,7 +13,7 @@ public interface EmployeeService {
     CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImage);
 
     // 로그인
-    CommonResponse<?> login(EmployeeDto request);
+//    CommonResponse<?> login(EmployeeDto request);
 
     // 비밀번호 변경 이메일 전송
     CommonResponse<?> sendPasswordChangeEmail(String email);
