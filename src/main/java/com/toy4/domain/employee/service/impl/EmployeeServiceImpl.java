@@ -3,7 +3,16 @@ package com.toy4.domain.employee.service.impl;
 import static com.toy4.domain.employee.type.EmployeeRole.USER;
 import static com.toy4.domain.position.type.PositionType.STAFF;
 import static com.toy4.domain.status.type.StatusType.JOINED;
-import static com.toy4.global.response.type.ErrorCode.*;
+import static com.toy4.global.response.type.ErrorCode.ALREADY_EXISTS_EMAIL;
+import static com.toy4.global.response.type.ErrorCode.ALREADY_EXISTS_PHONE;
+import static com.toy4.global.response.type.ErrorCode.DAY_OFF_HISTORIES_NOT_FOUND;
+import static com.toy4.global.response.type.ErrorCode.INVALID_EMAIL;
+import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_DEPARTMENT_TYPE;
+import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_ID;
+import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_TYPE;
+import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_STATUS_TYPE;
+import static com.toy4.global.response.type.ErrorCode.LOAD_USER_FAILED;
+import static com.toy4.global.response.type.ErrorCode.MISMATCH_PASSWORD;
 import static com.toy4.global.response.type.SuccessCode.AVAILABLE_EMAIL;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_CHANGE_PASSWORD;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_EMAIL_TRANSMISSION;
@@ -11,8 +20,6 @@ import static com.toy4.global.response.type.SuccessCode.COMPLETE_PERSONAL_INFO_U
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_SIGNUP;
 import static com.toy4.global.response.type.SuccessCode.SUCCESS;
 
-import com.toy4.domain.refreshToken.domain.RefreshToken;
-import com.toy4.domain.refreshToken.repository.RefreshTokenRepository;
 import com.toy4.domain.dayOffByPosition.domain.DayOffByPosition;
 import com.toy4.domain.dayOffByPosition.exception.DayOffByPositionException;
 import com.toy4.domain.dayOffByPosition.repository.DayOffByPositionRepository;
@@ -22,8 +29,8 @@ import com.toy4.domain.department.exception.DepartmentException;
 import com.toy4.domain.department.repository.DepartmentRepository;
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.domain.Employee;
-import com.toy4.domain.employee.dto.response.EmployeeDayOffInfoResponse;
 import com.toy4.domain.employee.dto.EmployeeDto;
+import com.toy4.domain.employee.dto.response.EmployeeDayOffInfoResponse;
 import com.toy4.domain.employee.dto.response.MyPageResponse;
 import com.toy4.domain.employee.dto.response.PersonalInfoResponse;
 import com.toy4.domain.employee.exception.EmployeeException;
@@ -33,6 +40,7 @@ import com.toy4.domain.position.domain.Position;
 import com.toy4.domain.position.exception.PositionException;
 import com.toy4.domain.position.repository.PositionRepository;
 import com.toy4.domain.position.type.PositionType;
+import com.toy4.domain.refreshToken.repository.RefreshTokenRepository;
 import com.toy4.domain.status.domain.Status;
 import com.toy4.domain.status.exception.StatusException;
 import com.toy4.domain.status.repository.StatusRepository;
@@ -43,8 +51,6 @@ import com.toy4.global.jwt.JwtProvider;
 import com.toy4.global.response.dto.CommonResponse;
 import com.toy4.global.response.service.ResponseService;
 import com.toy4.global.response.type.ErrorCode;
-import com.toy4.global.token.dto.TokenDto;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -175,40 +181,42 @@ public class EmployeeServiceImpl implements EmployeeService {
         return responseService.success(employee.getId(), COMPLETE_SIGNUP);
     }
 
-   @Override
-   @Transactional
-   public CommonResponse<?> login(EmployeeDto request) {
-       // 1. 이메일로 회원 정보 확인
-       Employee employee = getEmployeeByEmail(request.getEmail());
-        
-       // 2. 비밀번호 확인
-       validatePasswordWithDB(request.getPassword(), employee.getPassword());
+//    @Override
+//    @Transactional
+//    public CommonResponse<?> login(EmployeeDto request) {
+//        // 1. 이메일로 회원 정보 확인
+//        Employee employee = getEmployeeByEmail(request.getEmail());
+//
+//        // 2. 비밀번호 확인
+//        validatePasswordWithDB(request.getPassword(), employee.getPassword());
+//
+//        // 3. 토큰 발급
+//        TokenDto token = jwtProvider.generateToken(request.getEmail(), request.getRole());
+//        String refreshToken = token.getRefreshToken();
+//
+//        Long employeeId = employee.getId();
+//        RefreshToken currentToken = refreshTokenRepository.findByKey(employeeId).orElse(null);
+//        if (currentToken != null) {
+//            currentToken.updateToken(refreshToken);
+//            refreshTokenRepository.save(currentToken);
+//        } else {
+//            refreshTokenRepository.save(
+//                    RefreshToken.builder()
+//                            .key(employeeId)
+//                            .token(refreshToken)
+//                            .build());
+//        }
+//
+//        HashMap<String, Object> map = new HashMap<>();
+//        map.put("id", employeeId);
+//        map.put("token", token);
+//
+//        return responseService.success(map, SUCCESS);
+//    }
 
-       // 3. 토큰 발급
-       TokenDto token = jwtProvider.generateToken(request.getEmail(), request.getRole());
-       String refreshToken = token.getRefreshToken();
-
-       Long employeeId = employee.getId();
-       RefreshToken currentToken = refreshTokenRepository.findByKey(employeeId).orElse(null);
-       if (currentToken != null) {
-           currentToken.updateToken(refreshToken);
-           refreshTokenRepository.save(currentToken);
-       } else {
-           refreshTokenRepository.save(
-                   RefreshToken.builder()
-                           .key(employeeId)
-                           .token(refreshToken)
-                           .build());
-       }
-
-       HashMap<String, Object> map = new HashMap<>();
-       map.put("id", employeeId);
-       map.put("token", token);
-
-       return responseService.success(map, SUCCESS);
-   }
-
-    /** 인증 이메일 전송 */
+    /**
+     * 인증 이메일 전송
+     */
     @Override
     public CommonResponse<?> sendPasswordChangeEmail(String email) {
 
@@ -280,9 +288,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                .orElseThrow(() -> new EmployeeException(INVALID_EMAIL));
    }
 
-    /** UUID로 회원 조회 */
-    private Employee getEmployeeByAuthToken(String uuid) {
-        return employeeRepository.findByAuthToken(uuid)
+    /** authToken 회원 조회 */
+    private Employee getEmployeeByAuthToken(String authToken) {
+        return employeeRepository.findByAuthToken(authToken)
                 .orElseThrow(() -> new EmployeeException(LOAD_USER_FAILED));
     }
 

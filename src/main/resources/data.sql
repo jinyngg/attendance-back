@@ -1,12 +1,13 @@
 -- 부서
 INSERT INTO department (type)
 VALUES
-    ('DEVELOPMENT'),
-    ('PLANNING'),
-    ('SALES'),
-    ('HR'),
-    ('ACCOUNTING'),
-    ('LEGAL');
+    ('AUTOMOBILE'),
+    ('STORE'),
+    ('SECURITIES'),
+    ('SEMICON'),
+    ('MEDICAL'),
+    ('MICRO'),
+    ('UNKNOWN');
 
 -- 직급
 INSERT INTO position (type)

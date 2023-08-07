@@ -4,15 +4,25 @@ import com.toy4.domain.BaseEntity;
 import com.toy4.domain.department.domain.Department;
 import com.toy4.domain.employee.dto.EmployeeDto;
 import com.toy4.domain.employee.type.EmployeeRole;
+import com.toy4.domain.loginHistory.domain.LoginHistory;
 import com.toy4.domain.position.domain.Position;
 import com.toy4.domain.status.domain.Status;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -76,11 +86,11 @@ public class Employee extends BaseEntity {
     @Column(name = "detail_address", length = 255)
     private String detailAddress;
 
-    public void update(EmployeeDto employeeDto, String profileImagePath) {
-        this.department = employeeDto.getDepartment();
-        this.profileImagePath = profileImagePath;
-        this.phone = employeeDto.getPhone();
-    }
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<LoginHistory> loginHistory;
 
     public void updatePassword(String password) {
         this.password = password;
@@ -90,6 +100,11 @@ public class Employee extends BaseEntity {
         this.authToken = uuid;
     }
 
+
+    public void updateLastLoginAt() {
+        this.lastLoginAt = LocalDateTime.now();
+    }
+  
     public void updateEmployeeInfo (EmployeeDto employeeDto, String profileImagePath) {
         this.department = employeeDto.getDepartment();
         this.position = employeeDto.getPosition();

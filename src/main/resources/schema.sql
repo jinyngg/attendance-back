@@ -60,6 +60,7 @@ CREATE TABLE employee
     detail_address     VARCHAR(255)                        COMMENT '주소2(상세주소)',
     created_at         TIMESTAMP    NOT NULL DEFAULT NOW() COMMENT '생성일',
     updated_at         TIMESTAMP    NOT NULL DEFAULT NOW() COMMENT '수정일',
+    last_login_at      TIMESTAMP     DEFAULT NOW()         COMMENT '최종 로그인',
     FOREIGN KEY (position_id) REFERENCES position (id),     -- position 테이블의 id 칼럼을 참조
     FOREIGN KEY (department_id) REFERENCES department (id), -- department 테이블의 id 칼럼을 참조
     FOREIGN KEY (status_id) REFERENCES status (id)          -- status 테이블의 id 칼럼을 참조;
@@ -150,4 +151,15 @@ CREATE TABLE duty_history
     created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at  TIMESTAMP NOT NULL DEFAULT NOW(),
     FOREIGN KEY (employee_id) REFERENCES employee (id)
+);
+
+-- 로그인 이력
+CREATE TABLE login_history (
+                               id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+                               employee_id BIGINT NOT NULL,
+                               client_ip   VARCHAR(255),
+                               user_agent  VARCHAR(255),
+                               created_at  TIMESTAMP,
+                               updated_at  TIMESTAMP,
+                               FOREIGN KEY (employee_id) REFERENCES employee (id)
 );
