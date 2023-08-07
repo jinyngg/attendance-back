@@ -6,6 +6,7 @@ import com.toy4.domain.employee.dto.EmployeeDto;
 import com.toy4.domain.employee.type.EmployeeRole;
 import com.toy4.domain.position.domain.Position;
 import com.toy4.domain.status.domain.Status;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -76,6 +77,9 @@ public class Employee extends BaseEntity {
     @Column(name = "detail_address", length = 255)
     private String detailAddress;
 
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
     public void update(EmployeeDto employeeDto, String profileImagePath) {
         this.department = employeeDto.getDepartment();
         this.profileImagePath = profileImagePath;
@@ -90,6 +94,11 @@ public class Employee extends BaseEntity {
         this.authToken = uuid;
     }
 
+
+    public void updateLastLoginAt() {
+        this.lastLoginAt = LocalDateTime.now();
+    }
+  
     public void updateEmployeeInfo (EmployeeDto employeeDto, String profileImagePath) {
         this.department = employeeDto.getDepartment();
         this.position = employeeDto.getPosition();

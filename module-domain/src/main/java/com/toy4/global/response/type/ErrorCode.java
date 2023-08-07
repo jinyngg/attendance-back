@@ -50,9 +50,11 @@ public enum ErrorCode {
     DAY_OFF_HISTORIES_NOT_FOUND(HttpStatus.BAD_REQUEST, "연차 리스트 내역이 존재하지 않습니다."),
     DUTY_HISTORIES_NOT_FOUND(HttpStatus.BAD_REQUEST, "당직 리스트 내역이 존재하지 않습니다."),
     EMPLOYEE_APPROVED_DUTY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 직원의 승인된 당직 내역이 존재하지 않습니다."),
+
     EMPLOYEE_APPROVED_DAY_OFF_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 직원의 승인된 연차 내역이 존재하지 않습니다."),
     PAST_DATE(HttpStatus.BAD_REQUEST, "이미 지난 날짜의 경우는 신청할 수 없습니다."),
     NULL_DATE(HttpStatus.BAD_REQUEST, "날짜가 입력되지 않았습니다."),
+  
     ;
 
     private final HttpStatus httpStatus;
