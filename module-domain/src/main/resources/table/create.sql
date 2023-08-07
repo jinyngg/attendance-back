@@ -50,7 +50,7 @@ CREATE TABLE day_off
 CREATE TABLE employee
 (
     id                  BIGINT PRIMARY KEY AUTO_INCREMENT        COMMENT 'ID',
-    auth_token          VARCHAR(36)   NOT NULL                   COMMENT '인증 토큰';
+    auth_token          VARCHAR(36)   NOT NULL                   COMMENT '인증 토큰',
     position_id         BIGINT        NOT NULL                   COMMENT '직급 ID',
     department_id       BIGINT        NOT NULL                   COMMENT '부서 ID',
     status_id           BIGINT        NOT NULL                   COMMENT '회원상태 ID',
@@ -63,12 +63,13 @@ CREATE TABLE employee
     day_off_remains     FLOAT         NOT NULL                   COMMENT '잔여 연차수',
     role                VARCHAR(20)   NOT NULL                   COMMENT '권한',
     phone               VARCHAR(60)   NOT NULL                   COMMENT '전화번호',
-    birthdate           DATE          NOT NULL                   COMMENT '생년월일',
+    birthdate           DATE                                     COMMENT '생년월일',
     zip_address         CHAR(5)                COLLATE ascii_bin COMMENT '우편번호',
     road_address        VARCHAR(255)                             COMMENT '주소1(도로명)',
     detail_address      VARCHAR(255)                             COMMENT '주소2(상세주소)',
     created_at          TIMESTAMP     NOT NULL DEFAULT NOW()     COMMENT '생성일',
     updated_at          TIMESTAMP     NOT NULL DEFAULT NOW()     COMMENT '수정일',
+    last_login_at       TIMESTAMP     DEFAULT NOW()              COMMENT '최종 로그인',
     FOREIGN KEY (position_id) REFERENCES position (id),     -- position 테이블의 id 칼럼을 참조
     FOREIGN KEY (department_id) REFERENCES department (id), -- department 테이블의 id 칼럼을 참조
     FOREIGN KEY (status_id) REFERENCES status (id)          -- status 테이블의 id 칼럼을 참조;
@@ -137,3 +138,15 @@ CREATE TABLE duty_history
     updated_at  TIMESTAMP    NOT NULL DEFAULT NOW(),
     FOREIGN KEY (employee_id) REFERENCES employee (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE login_history (
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    employee_id BIGINT NOT NULL,
+    client_ip   VARCHAR(255),
+    user_agent  VARCHAR(255),
+    created_at  TIMESTAMP,
+    updated_at  TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employee (id)
+);
+
+
