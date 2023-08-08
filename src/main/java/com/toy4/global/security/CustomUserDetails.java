@@ -1,9 +1,6 @@
 package com.toy4.global.security;
 
-import static com.toy4.domain.status.type.StatusType.RETIRED;
-
 import com.toy4.domain.employee.domain.Employee;
-import com.toy4.domain.status.domain.Status;
 import java.util.Collection;
 import java.util.Collections;
 import lombok.Getter;
@@ -40,8 +37,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        Status status = employee.getStatus();
-        return status.getType() != RETIRED;
+        return true;
     }
 
     @Override
@@ -53,5 +49,4 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }
