@@ -5,6 +5,7 @@ import com.toy4.domain.dayOffHistory.repository.DayOffHistoryRepository;
 import com.toy4.domain.dutyHistory.domain.DutyHistory;
 import com.toy4.domain.dutyHistory.dto.DutyCancellationRequest;
 import com.toy4.domain.dutyHistory.dto.DutyRegistrationRequest;
+import com.toy4.domain.dutyHistory.dto.DutyUpdateRequest;
 import com.toy4.domain.dutyHistory.exception.DutyHistoryException;
 import com.toy4.domain.dutyHistory.repository.DutyHistoryRepository;
 import com.toy4.domain.employee.domain.Employee;
@@ -25,6 +26,7 @@ public class DutyHistoryMainService {
     private final EmployeeRepository employeeRepository;
     private final DayOffHistoryRepository dayOffHistoryRepository;
 
+    @Transactional
     public void registerDuty(DutyRegistrationRequest requestBody) {
         Employee employee = employeeRepository.findById(requestBody.getEmployeeId())
                 .orElseThrow(() -> new DutyHistoryException(ErrorCode.EMPLOYEE_NOT_FOUND));
@@ -43,13 +45,13 @@ public class DutyHistoryMainService {
 
     @Transactional
     public void cancelDutyRegistrationRequest(Long dutyHistoryId, DutyCancellationRequest requestBody) {
-        if (!requestBody.getStatus().equals("취소")) {
+        if (!requestBody.getStatus().equals(RequestStatus.CANCELLED.getDescription())) {
             throw new DutyHistoryException(ErrorCode.INVALID_SCHEDULE_REQUEST_STATUS);
         }
         Employee employee = employeeRepository.findById(requestBody.getEmployeeId())
                 .orElseThrow(() -> new DutyHistoryException(ErrorCode.EMPLOYEE_NOT_FOUND));
         DutyHistory dutyHistory = dutyHistoryRepository.findById(dutyHistoryId)
-                .orElseThrow(() -> new DutyHistoryException(ErrorCode.DUTY_HISTORY_NOT_FOUND));
+                .orElseThrow(() -> new DutyHistoryException(ErrorCode.DUTY_NOT_FOUND));
         if (dutyHistory.getStatus() == RequestStatus.CANCELLED) {
             throw new DutyHistoryException(ErrorCode.ALREADY_CANCELLED_SCHEDULE);
         }
@@ -57,5 +59,32 @@ public class DutyHistoryMainService {
             throw new DutyHistoryException(ErrorCode.UNMATCHED_SCHEDULE_AND_EMPLOYEE);
         }
         dutyHistory.updateStatus(RequestStatus.CANCELLED);
+    }
+
+    @Transactional
+    public void updateDutyRegistrationRequest(Long dutyHistoryId, DutyUpdateRequest requestBody) {
+        DutyHistory dutyHistory = dutyHistoryRepository.findById(dutyHistoryId)
+                .orElseThrow(() -> new DutyHistoryException(ErrorCode.DUTY_NOT_FOUND));
+        if (dutyHistory.getStatus() != RequestStatus.REQUESTED) {
+            throw new DutyHistoryException(ErrorCode.ALREADY_RESPONDED_SCHEDULE);
+        }
+        Employee employee = employeeRepository.findById(requestBody.getEmployeeId())
+                .orElseThrow(() -> new DutyHistoryException(ErrorCode.EMPLOYEE_NOT_FOUND));
+        if (employee != dutyHistory.getEmployee()) {
+            throw new DutyHistoryException(ErrorCode.UNMATCHED_SCHEDULE_AND_EMPLOYEE);
+        }
+
+        Optional<DutyHistory> dutyOverlappedDate =
+                dutyHistoryRepository.findOverlappedDate(requestBody.getEmployeeId(), requestBody.getDate());
+        if (dutyOverlappedDate.isPresent()) {
+            throw new DutyHistoryException(ErrorCode.OVERLAPPED_DUTY_DATE);
+        }
+        Optional<DayOffHistory> overlappedDayOffHistory =
+                dayOffHistoryRepository.findOverlappedDate(requestBody.getEmployeeId(), requestBody.getDate());
+        if (overlappedDayOffHistory.isPresent()) {
+            throw new DutyHistoryException(ErrorCode.OVERLAPPED_DUTY_DATE);
+        }
+
+        dutyHistory.updateDate(requestBody.getDate());
     }
 }

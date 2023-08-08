@@ -140,7 +140,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
    @Override
    @Transactional
-   public CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImageFile) {
+   public CommonResponse<?> signup(EmployeeDto request) {
+//   public CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImageFile) {
        // 1. 유효성 검사(이메일 및 전화번호 중복 확인)
        validateEmailDuplication(request.getEmail());
        validatePhoneDuplication(request.getPhone());
@@ -149,10 +150,12 @@ public class EmployeeServiceImpl implements EmployeeService {
        validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
 
        // 3. 이미지 정보 확인
-       String profileImagePath = profileImageFile.isEmpty() ?
-               employeeProfileImageService.getDefaultFile()
-//               : employeeProfileImageService.saveFile(request.getId(), profileImageFile);
-               : employeeProfileImageService.saveFile(profileImageFile);
+//       String profileImagePath = profileImageFile.isEmpty() ?
+//               employeeProfileImageService.getDefaultFile()
+////               : employeeProfileImageService.saveFile(request.getId(), profileImageFile);
+//               : employeeProfileImageService.saveFile(profileImageFile);
+
+       String profileImagePath = employeeProfileImageService.getDefaultFile();
 
        // 4. 저장 정보 확인
        Department department = getDepartmentByType(request.getDepartmentType());

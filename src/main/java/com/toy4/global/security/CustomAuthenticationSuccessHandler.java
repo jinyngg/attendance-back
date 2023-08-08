@@ -2,7 +2,6 @@ package com.toy4.global.security;
 
 import static com.toy4.global.response.type.ErrorCode.INVALID_EMAIL;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toy4.domain.employee.domain.Employee;
 import com.toy4.domain.employee.exception.EmployeeException;
@@ -12,9 +11,12 @@ import com.toy4.domain.loginHistory.service.LoginHistoryService;
 import com.toy4.domain.refreshToken.domain.RefreshToken;
 import com.toy4.domain.refreshToken.repository.RefreshTokenRepository;
 import com.toy4.global.jwt.JwtProvider;
+import com.toy4.global.response.dto.CommonResponse;
+import com.toy4.global.response.type.SuccessCode;
 import com.toy4.global.token.dto.TokenDto;
 import com.toy4.global.utils.RequestUtils;
 import java.io.IOException;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +37,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     private final EmployeeRepository employeeRepository;
     private final LoginHistoryService loginHistoryService;
     private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -64,43 +67,37 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                             .build());
         }
 
-        LoginHistoryDto loginHistoryDto = LoginHistoryDto.builder()
-                .employee(employee)
-                .clientIp(clientIp)
-                .userAgent(userAgent)
-                .build();
+        employee.updateLastLoginAt();
+        employeeRepository.save(employee);
+        loginHistoryService.saveLoginHistory(
+                LoginHistoryDto.builder()
+                        .employee(employee)
+                        .clientIp(clientIp)
+                        .userAgent(userAgent)
+                        .build());
 
-        String successMessage = generateSuccessMessage(employeeId, token);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("id", employeeId);
+        data.put("token", token);
+
+        String loginSuccessMessage = objectMapper.writeValueAsString(
+                CommonResponse.builder()
+                        .success(true)
+                        .code(SuccessCode.SUCCESS.name())
+                        .message(SuccessCode.SUCCESS.getMessage())
+                        .data(data)
+                        .build());
 
         response.setStatus(HttpStatus.OK.value());
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(successMessage);
+        response.getWriter().write(loginSuccessMessage);
 
-        employee.updateLastLoginAt();
-        employeeRepository.save(employee);
-        loginHistoryService.saveLoginHistory(loginHistoryDto);
     }
 
-    /**
-     * 이메일로 회원 조회
-     */
     private Employee getEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new EmployeeException(INVALID_EMAIL));
-    }
-
-    private String generateSuccessMessage(Long employeeId, TokenDto token) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String tokenJson;
-
-        try {
-            tokenJson = objectMapper.writeValueAsString(token);
-        } catch (JsonProcessingException e) {
-            tokenJson = "{}";
-        }
-
-        return "{\"id\": \"" + employeeId + "\", \"token\": " + tokenJson + "}";
     }
 
 }

@@ -1,7 +1,7 @@
 package com.toy4.domain.dayOffHistory.service;
 
 import com.toy4.domain.dayOffHistory.domain.DayOffHistory;
-import com.toy4.domain.dayOffHistory.dto.DayOffRegistrationDto;
+import com.toy4.domain.dayOffHistory.dto.DayOffHistoryMainDto;
 import com.toy4.domain.dayOffHistory.repository.DayOffHistoryRepository;
 import com.toy4.domain.dayoff.domain.DayOff;
 import com.toy4.domain.dayoff.exception.DayOffException;
@@ -45,11 +45,11 @@ class DayOffHistoryMainServiceTest {
     private DayOffRepository mockDayOffRepo;
 
     @Mock
-    private DayOffRegistrationDto mockDto;
+    private DayOffHistoryMainDto mockDto;
 
     @BeforeEach
     void setup() {
-        mockSut = new DayOffHistoryMainService(mockDayOffHistoryRepo, mockEmpRepo, mockDayOffRepo);
+        mockSut = new DayOffHistoryMainService(mockDayOffHistoryRepo, mockEmpRepo, mockDayOffRepo, null);
     }
 
     @DisplayName("[예외] 종료 날짜가 시작 날짜보다 빠른 경우")

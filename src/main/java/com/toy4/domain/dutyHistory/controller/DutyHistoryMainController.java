@@ -2,11 +2,12 @@ package com.toy4.domain.dutyHistory.controller;
 
 import com.toy4.domain.dutyHistory.dto.DutyCancellationRequest;
 import com.toy4.domain.dutyHistory.dto.DutyRegistrationRequest;
+import com.toy4.domain.dutyHistory.dto.DutyUpdateRequest;
 import com.toy4.domain.dutyHistory.exception.DutyHistoryException;
 import com.toy4.domain.dutyHistory.service.DutyHistoryMainService;
 import com.toy4.global.response.service.ResponseService;
-import com.toy4.global.response.type.ErrorCode;
 import com.toy4.global.response.type.SuccessCode;
+import com.toy4.global.utils.BindingResultHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,27 +17,27 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/schedules/duty")
 @RestController
 public class DutyHistoryMainController {
 
     private final DutyHistoryMainService dutyHistoryMainService;
     private final ResponseService responseService;
+    private final BindingResultHandler bindingResultHandler;
 
-    @PostMapping("/schedules/duty")
+    @PostMapping
     public ResponseEntity<?> requestDutyRegistration(
             @Valid @RequestBody DutyRegistrationRequest requestBody,
             BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasFieldErrors()) {
             log.info("[POST /api/schedules/duty] errors");
-            bindingResult.getAllErrors().forEach(objectError -> log.info("{}", objectError));
+            String errorMessage = bindingResultHandler.getErrorMessageFromBindingResult(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(responseService.failure(ErrorCode.INVALID_REQUEST));
+                    .body(responseService.failure(errorMessage));
         }
 
         dutyHistoryMainService.registerDuty(requestBody);
@@ -45,7 +46,7 @@ public class DutyHistoryMainController {
                 .body(responseService.success(null, SuccessCode.SUCCESS));
     }
 
-    @PutMapping("/schedules/duty/{dutyId}/status")
+    @PutMapping("/{dutyId}/status")
     public ResponseEntity<?> requestDutyCancellation(
             @PathVariable("dutyId") Long dutyHistoryId,
             @Valid @RequestBody DutyCancellationRequest requestBody,
@@ -53,7 +54,7 @@ public class DutyHistoryMainController {
 
         if (bindingResult.hasFieldErrors()) {
             log.error("[error] PUT /api/schedules/duty/{}/status: {}", dutyHistoryId, bindingResult.getFieldErrors());
-            String errorMessage = getErrorMessageFromBindingResult(bindingResult);
+            String errorMessage = bindingResultHandler.getErrorMessageFromBindingResult(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(responseService.failure(errorMessage));
         }
@@ -63,15 +64,27 @@ public class DutyHistoryMainController {
         return ResponseEntity.ok(responseService.success(null, SuccessCode.SUCCESS));
     }
 
+    @PutMapping("/{dutyId}")
+    public ResponseEntity<?> requestDutyUpdate(
+            @PathVariable("dutyId") Long dutyHistoryId,
+            @Valid @RequestBody DutyUpdateRequest requestBody,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasFieldErrors()) {
+            log.error("[error] PUT /api/schedules/duty/{}: {}", dutyHistoryId, bindingResult.getFieldErrors());
+            String errorMessage = bindingResultHandler.getErrorMessageFromBindingResult(bindingResult);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(responseService.failure(errorMessage));
+        }
+
+        dutyHistoryMainService.updateDutyRegistrationRequest(dutyHistoryId, requestBody);
+
+        return ResponseEntity.ok(responseService.success());
+    }
+
     @ExceptionHandler
     public ResponseEntity<?> handleDutyHistoryException(DutyHistoryException e) {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(responseService.failure(e.getErrorCode()));
-    }
-
-    /** bindingResult ErrorMessage 반환 */
-    private String getErrorMessageFromBindingResult(BindingResult bindingResult) {
-        return Objects.requireNonNull(bindingResult.getFieldError())
-                .getDefaultMessage();
     }
 }

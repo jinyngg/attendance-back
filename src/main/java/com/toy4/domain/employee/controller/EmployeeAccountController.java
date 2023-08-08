@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequiredArgsConstructor
@@ -49,18 +47,15 @@ public class EmployeeAccountController {
     @EmployeeLock
     @PostMapping(path = "/signup", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> signup(
-//            @Valid @RequestPart SignupRequest request
-            @RequestPart SignupRequest request
-            , @RequestPart(required=false) MultipartFile profileImageFile
+            @Valid @RequestBody SignupRequest request
             , BindingResult bindingResult
     ) {
-        // @RequestPart -> @Valid 사용 불가, bindingResult 값 사용 전 Exception 처리 -> 수정 필요
-//        if (bindingResult.hasErrors()) {
-//            String errorMessage = getErrorMessageFromBindingResult(bindingResult);
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.failure(errorMessage));
-//        }
+        if (bindingResult.hasErrors()) {
+            String errorMessage = getErrorMessageFromBindingResult(bindingResult);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.failure(errorMessage));
+        }
 
-        CommonResponse<?> response = employeeService.signup(SignupRequest.to(request), profileImageFile);
+        CommonResponse<?> response = employeeService.signup(SignupRequest.to(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

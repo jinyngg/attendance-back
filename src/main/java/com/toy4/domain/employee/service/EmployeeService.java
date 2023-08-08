@@ -10,7 +10,8 @@ public interface EmployeeService {
     CommonResponse<?> validateUniqueEmail(String email);
 
     // 회원가입
-    CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImage);
+    CommonResponse<?> signup(EmployeeDto request);
+//    CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImage);
 
     // 로그인
 //    CommonResponse<?> login(EmployeeDto request);

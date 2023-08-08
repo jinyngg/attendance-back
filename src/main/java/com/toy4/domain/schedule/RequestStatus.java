@@ -12,7 +12,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RequestStatus {
     REQUESTED("대기중"),
-    CANCELLED("취소됨"),
+    REQUESTED("요청됨"),
+    CANCELLED("취소"),
     APPROVED("승인됨"),
     REJECTED("거절됨")
     ;
