@@ -1,12 +1,13 @@
 -- 부서
 INSERT INTO department (type, created_at, updated_at)
 VALUES
-    ('DEVELOPMENT', NOW(), NOW()),
-    ('PLANNING', NOW(), NOW()),
-    ('SALES', NOW(), NOW()),
-    ('HR', NOW(), NOW()),
-    ('ACCOUNTING', NOW(), NOW()),
-    ('LEGAL', NOW(), NOW());
+    ('AUTOMOBILE', NOW(), NOW()),
+    ('STORE', NOW(), NOW()),
+    ('SECURITIES', NOW(), NOW()),
+    ('SEMICON', NOW(), NOW()),
+    ('MEDICAL', NOW(), NOW()),
+    ('UNKNOWN', NOW(), NOW()),
+    ('MICRO', NOW(), NOW());
 
 -- 직급
 INSERT INTO position (type, created_at, updated_at)
