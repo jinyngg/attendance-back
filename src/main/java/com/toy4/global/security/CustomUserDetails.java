@@ -1,6 +1,7 @@
 package com.toy4.global.security;
 
 import com.toy4.domain.employee.domain.Employee;
+import com.toy4.domain.employee.type.EmployeeRole;
 import java.util.Collection;
 import java.util.Collections;
 import lombok.Getter;
@@ -17,7 +18,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(employee.getRole().getRole()));
+        EmployeeRole role = employee.getRole();
+        return Collections.singleton(new SimpleGrantedAuthority(role.getRole()));
     }
 
     @Override
