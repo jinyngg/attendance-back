@@ -15,7 +15,7 @@ public class DayOffHistoriesResponse {
 	private String department;
 	private String position;
 	private String hireDate;
-	private Long dayOffHistoryId;
+	private Long dayOffId;
 	private String requestDate;
 	private String type;
 	private String status;
@@ -33,7 +33,7 @@ public class DayOffHistoriesResponse {
 			.department(dayOffHistory.getEmployee().getDepartment().getType().getDescription())
 			.position(dayOffHistory.getEmployee().getPosition().getType().getDescription())
 			.hireDate(dayOffHistory.getEmployee().getHireDate().format(formatter))
-			.dayOffHistoryId(dayOffHistory.getId())
+			.dayOffId(dayOffHistory.getId())
 			.requestDate(dayOffHistory.getCreatedAt().format(formatter))
 			.type(dayOffHistory.getDayOff().getType().getDescription())
 			.status(dayOffHistory.getStatus().getDescription())
