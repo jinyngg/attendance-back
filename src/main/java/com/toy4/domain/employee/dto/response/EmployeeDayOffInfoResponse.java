@@ -1,22 +1,33 @@
 package com.toy4.domain.employee.dto.response;
 
+import static com.toy4.global.date.DateFormatter.*;
+
+import java.time.LocalDate;
+
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.position.type.PositionType;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
 public class EmployeeDayOffInfoResponse {
-	private Long id;
-	private String name;
-	private DepartmentType department;
-	private PositionType position;
-	private String hireDate;
-	private float dayOffRemains;
-	private float dayOffUsed;
-	private float dayOffTotal;
+	private final Long employeeId;
+	private final String name;
+	private final String department;
+	private final String position;
+	private final String hireDate;
+	private final int dayOffUsed;
+	private final int dayOffRemains;
+	private final int dayOffTotal;
+
+	public EmployeeDayOffInfoResponse(Long id, String name, DepartmentType departmentType, PositionType positionType, LocalDate hireDate, float dayOffUsed, float dayOffRemains, float dayOffTotal) {
+		this.employeeId = id;
+		this.name = name;
+		this.department = departmentType.getDescription();
+		this.position = positionType.getDescription();
+		this.hireDate = hireDate.format((formatter));
+		this.dayOffUsed = (int)dayOffUsed;
+		this.dayOffRemains = (int)dayOffRemains;
+		this.dayOffTotal = (int)dayOffTotal;
+	}
 }
