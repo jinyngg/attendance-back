@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class DayOffApproveResponse {
-	private Long dayOffHistoryId;
+	private Long dayOffId;
 	private Long employeeId;
 	private String requestDate;
 	private String dayOff;
@@ -22,7 +22,7 @@ public class DayOffApproveResponse {
 	public static DayOffApproveResponse from(DayOffHistory dayOffHistory) {
 
 		return DayOffApproveResponse.builder()
-			.dayOffHistoryId(dayOffHistory.getId())
+			.dayOffId(dayOffHistory.getId())
 			.employeeId(dayOffHistory.getId())
 			.requestDate(dayOffHistory.getCreatedAt().format(formatter))
 			.dayOff(dayOffHistory.getDayOff().getType().getDescription())
