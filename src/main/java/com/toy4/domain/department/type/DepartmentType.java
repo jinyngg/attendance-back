@@ -1,8 +1,7 @@
 package com.toy4.domain.department.type;
 
 import java.util.Arrays;
-
-import com.toy4.domain.dayoff.exception.DayOffException;
+import com.toy4.domain.department.exception.DepartmentException;
 import com.toy4.global.response.type.ErrorCode;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +25,6 @@ public enum DepartmentType {
     return Arrays.stream(values())
         .filter(departmentType -> departmentType.getDescription().equals(type))
         .findFirst()
-        .orElseThrow(() -> new DayOffException(ErrorCode.INVALID_DAY_OFF_TYPE));
+        .orElseThrow(() -> new DepartmentException(ErrorCode.INVALID_REQUEST_DEPARTMENT_TYPE));
   }
 }
