@@ -1,7 +1,7 @@
 file:
   upload:
     path:
-      windows: D:\\attendance\\images\\
+      windows: D:\\attendance\\images//
       linux: /home/ubuntu/attendance/images/
 
 

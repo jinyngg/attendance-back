@@ -5,7 +5,7 @@ server:
 file:
   upload:
     path:
-      windows: D:\\attendance\\images\\
+      windows: D:\\attendance\\images/
       linux: /home/ubuntu/attendance/images/
 
 
@@ -32,6 +32,7 @@ spring:
     url: jdbc:h2:tcp://localhost/~/attendance/db;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true
     driver-class-name: org.h2.Driver
     username: sa
+    password: sa
 
   sql:
     init:
