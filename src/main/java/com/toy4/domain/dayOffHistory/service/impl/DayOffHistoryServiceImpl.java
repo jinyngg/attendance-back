@@ -79,13 +79,13 @@ public class DayOffHistoryServiceImpl implements DayOffHistoryService {
 		dayOffHistory.updateStatusDayOff(dto);
 		dayOffHistoryRepository.save(dayOffHistory);
 
-		if (dayOffHistory.getStatus() == RequestStatus.APPROVED) {
+		if (dayOffHistory.getStatus() == RequestStatus.CANCELLED) {
 
 			float totalAmount = dayOffHistory.getTotalAmount();
 
 			Employee employee = dayOffHistory.getEmployee();
 			float remainingDaysOff = employee.getDayOffRemains();
-			remainingDaysOff -= totalAmount;
+			remainingDaysOff += totalAmount;
 
 			employee.updateDayOffRemains(remainingDaysOff);
 			employeeRepository.save(employee);
