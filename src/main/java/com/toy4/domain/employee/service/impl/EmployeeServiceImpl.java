@@ -29,8 +29,9 @@ import com.toy4.domain.department.exception.DepartmentException;
 import com.toy4.domain.department.repository.DepartmentRepository;
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.domain.Employee;
-import com.toy4.domain.employee.dto.EmployeeDto;
+import com.toy4.domain.employee.dto.response.EmployeeDto;
 import com.toy4.domain.employee.dto.response.EmployeeDayOffInfoResponse;
+import com.toy4.domain.employee.dto.response.EmployeeInfo;
 import com.toy4.domain.employee.dto.response.MyPageResponse;
 import com.toy4.domain.employee.dto.response.PersonalInfoResponse;
 import com.toy4.domain.employee.exception.EmployeeException;
@@ -78,9 +79,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public CommonResponse<?> updateEmployeeInfo(EmployeeDto employeeDto, MultipartFile profileImageFile) {
-        Employee employee = employeeRepository.findById(employeeDto.getId())
-            .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+    public CommonResponse<?> updateEmployeeInfo(EmployeeInfo dto, MultipartFile profileImageFile) {
+
+        Employee employee = findEmployee(dto.getEmployeeId());
 
         String profileImagePath = employeeProfileImageService.getDefaultFile();
         String employeeImagePath = employee.getProfileImagePath();
@@ -93,13 +94,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             profileImagePath = employeeProfileImageService.saveFile(profileImageFile);
         }
 
-        Department department = getDepartmentByType(employeeDto.getDepartmentType());
-        employeeDto.addDepartment(department);
+        Department department = getDepartmentByType(dto.getDepartmentType());
+        Position position = getPositionByType(dto.getPositionType());
 
-        Position position = getPositionByType(employeeDto.getPositionType());
-        employeeDto.addPosition(position);
-
-        employee.updateEmployeeInfo(employeeDto, profileImagePath);
+        employee.updateEmployeeInfo(department, position, dto, profileImagePath);
         employeeRepository.save(employee);
 
         return responseService.success(employee.getId(), COMPLETE_PERSONAL_INFO_UPDATE);
@@ -344,5 +342,10 @@ public class EmployeeServiceImpl implements EmployeeService {
    private DayOffByPosition getDayOffByPosition(Long positionId) {
        return dayOffByPositionRepository.findByPositionId(positionId)
                .orElseThrow(() -> new DayOffByPositionException(INVALID_REQUEST_POSITION_ID));
+   }
+
+   private Employee findEmployee(Long employeeId) {
+       return employeeRepository.findById(employeeId)
+           .orElseThrow(() -> new EmployeeException(ErrorCode.EMPLOYEE_NOT_FOUND));
    }
 }
