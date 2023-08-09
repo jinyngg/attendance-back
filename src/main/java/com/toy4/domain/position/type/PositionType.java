@@ -24,6 +24,6 @@ public enum PositionType {
     return Arrays.stream(values())
         .filter(positionType -> positionType.description.equals(type))
         .findFirst()
-        .orElseThrow(() -> new PositionException(ErrorCode.INVALID_DAY_OFF_TYPE));
+        .orElseThrow(() -> new PositionException(ErrorCode.INVALID_REQUEST_POSITION_TYPE));
   }
 }
