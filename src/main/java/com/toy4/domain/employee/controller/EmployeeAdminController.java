@@ -34,10 +34,10 @@ public class EmployeeAdminController {
 
 	@PutMapping(path="/employee",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<?> updateEmployeeInfo (
-		@RequestPart(value = "key") EmployeeInfoRequest employeeInfoRequest,
-		@RequestPart(value = "file", required=false) MultipartFile profile) {
+		@RequestPart(value = "employeeInfoRequest") EmployeeInfoRequest employeeInfoRequest,
+		@RequestPart(value = "profileImageFile", required=false) MultipartFile profileImageFile) {
 
-		CommonResponse<?> response = employeeService.updateEmployeeInfo(EmployeeInfoRequest.to(employeeInfoRequest), profile);
+		CommonResponse<?> response = employeeService.updateEmployeeInfo(EmployeeInfoRequest.to(employeeInfoRequest), profileImageFile);
 		return ResponseEntity.ok(response);
 	}
 

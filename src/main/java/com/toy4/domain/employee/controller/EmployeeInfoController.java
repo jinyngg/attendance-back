@@ -1,5 +1,4 @@
 package com.toy4.domain.employee.controller;
-
 import com.toy4.domain.employee.dto.request.PersonalInfoRequest;
 import com.toy4.domain.employee.service.EmployeeService;
 import com.toy4.domain.schedule.ScheduleMainService;
@@ -39,10 +38,10 @@ public class EmployeeInfoController {
 
 	@PutMapping(path="/personal-info",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<?> updatePersonalInfo(
-		@Validated @RequestPart PersonalInfoRequest personalInfoRequest,
-		@RequestPart(required=false) MultipartFile profile) {
+		@Validated @RequestPart(value = "personalInfoRequest") PersonalInfoRequest personalInfoRequest,
+		@RequestPart(value = "profileImageFile", required=false) MultipartFile profileImageFile) {
 
-		CommonResponse<?> response = employeeService.updateEmployeeInfo(PersonalInfoRequest.to(personalInfoRequest), profile);
+		CommonResponse<?> response = employeeService.updateEmployeeInfo(PersonalInfoRequest.to(personalInfoRequest), profileImageFile);
 		return ResponseEntity.ok(response);
 	}
 
