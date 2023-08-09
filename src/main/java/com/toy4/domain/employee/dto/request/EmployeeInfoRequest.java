@@ -4,50 +4,37 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toy4.domain.department.type.DepartmentType;
-import com.toy4.domain.employee.dto.EmployeeDto;
+import com.toy4.domain.employee.dto.response.EmployeeInfo;
 import com.toy4.domain.position.type.PositionType;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @Getter
-@Builder
 public class EmployeeInfoRequest {
 
 	@NotNull
 	private Long employeeId;
-	@NotNull(message ="부서가 누락되었습니다.")
-	private String department;
-	@NotNull(message = "직급이 누락되었습니다.")
-	private String position;
-	@NotBlank(message = "이름이 누락되었습니다.")
+	@NotBlank
+	private String departmentType;
+	@NotBlank
+	private String positionType;
+	@NotBlank
 	private String name;
-
-
-	@Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$"
-		, message = "전화번호 형식이 맞지 않습니다.(01X-XXX(X)-XXXX)")
+	@NotBlank
 	private String phone;
-	@NotNull(message = "입사일이 누락되었습니다.")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+	@NotNull
 	private LocalDate hireDate;
 
-	public static EmployeeDto to(EmployeeInfoRequest request) {
-		return EmployeeDto.builder()
-			.id(request.getEmployeeId())
-			.departmentType(DepartmentType.getByTypeString(request.getDepartment()))
-			.positionType(PositionType.getByTypeString(request.getPosition()))
-			.name(request.getName())
-			.phone(request.getPhone())
-			.hireDate(request.getHireDate())
+	public EmployeeInfo to() {
+		return EmployeeInfo.builder()
+			.employeeId(employeeId)
+			.departmentType(DepartmentType.getByTypeString(departmentType))
+			.positionType(PositionType.getByTypeString(positionType))
+			.name(name)
+			.phone(phone)
+			.hireDate(hireDate)
 			.build();
 	}
 }
