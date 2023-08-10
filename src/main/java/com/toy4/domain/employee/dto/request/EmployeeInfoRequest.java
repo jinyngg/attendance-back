@@ -17,9 +17,9 @@ public class EmployeeInfoRequest {
 	@NotNull
 	private Long employeeId;
 	@NotBlank
-	private String departmentType;
+	private String department;
 	@NotBlank
-	private String positionType;
+	private String position;
 	@NotBlank
 	private String name;
 	@NotBlank
@@ -30,8 +30,8 @@ public class EmployeeInfoRequest {
 	public EmployeeInfo to() {
 		return EmployeeInfo.builder()
 			.employeeId(employeeId)
-			.departmentType(DepartmentType.getByTypeString(departmentType))
-			.positionType(PositionType.getByTypeString(positionType))
+			.departmentType(DepartmentType.getByDescription(department))
+			.positionType(PositionType.getByDescription(position))
 			.name(name)
 			.phone(phone)
 			.hireDate(hireDate)
