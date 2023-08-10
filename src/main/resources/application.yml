@@ -87,3 +87,5 @@ spring:
       static-locations: classpath:/static/images/default/
       add-mappings: true
 
+scheduler:
+  cron: "0 0 2 1 1 *"
