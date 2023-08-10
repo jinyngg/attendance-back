@@ -29,7 +29,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                 CommonResponse.builder()
                         .success(false)
                         .code(ErrorCode.LOGIN_FAILED.name())
-                        .message(exception.getMessage())
+                        .message(ErrorCode.LOGIN_FAILED.getMessage())
                         .build());
 
         response.setStatus(HttpStatus.OK.value());
