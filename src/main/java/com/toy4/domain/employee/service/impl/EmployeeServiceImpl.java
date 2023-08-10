@@ -228,7 +228,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                         "        감사합니다." +
                         "    </p>" +
                         "    <a style=\"color: #FFF; text-decoration: none; text-align: center;\"" +
-                        "    href=\"http://localhost:3000/reset-pw?authToken=" + employee.getAuthToken() + "\" target=\"_blank\">" +
+                        "    href=\"https://soonyang.vercel.app/reset-pw?authToken=" + employee.getAuthToken() + "\" target=\"_blank\">" +
                         "        <p" +
                         "            style=\"display: inline-block; width: 250px; height: 45px; margin: 30px auto; background: #00a7e1; line-height: 45px; vertical-align: middle; font-size: 16px;\">" +
                         "            비밀번호 변경" +
