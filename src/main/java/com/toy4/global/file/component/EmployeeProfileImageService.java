@@ -41,7 +41,7 @@ public class EmployeeProfileImageService {
 	}
 
 	public String getDefaultFile() {
-		return "/user.png";
+		return "/images/default/user.png";
 	}
 
 	public void removeIfFileExists(String imagePath) {
