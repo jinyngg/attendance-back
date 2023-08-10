@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.dto.response.EmployeeInfo;
@@ -22,7 +23,8 @@ public class EmployeeInfoRequest {
 	private String position;
 	@NotBlank
 	private String name;
-	@NotBlank
+	@Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$"
+		, message = "전화번호 형식이 맞지 않습니다.(01X-XXX(X)-XXXX)")
 	private String phone;
 	@NotNull
 	private LocalDate hireDate;
