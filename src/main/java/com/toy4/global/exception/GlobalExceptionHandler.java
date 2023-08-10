@@ -1,23 +1,27 @@
 package com.toy4.global.exception;
 
+import static com.toy4.global.response.type.ErrorCode.CONSTRAINT_VIOLATION;
+import static com.toy4.global.response.type.ErrorCode.FILE_MAXIMUM_SIZE;
+import static com.toy4.global.response.type.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST;
+import static com.toy4.global.response.type.ErrorCode.LOAD_USER_FAILED;
+
 import com.toy4.domain.dayOffByPosition.exception.DayOffByPositionException;
 import com.toy4.domain.department.exception.DepartmentException;
 import com.toy4.domain.employee.exception.EmployeeException;
 import com.toy4.domain.position.exception.PositionException;
 import com.toy4.domain.schedule.ScheduleException;
 import com.toy4.domain.status.exception.StatusException;
-import com.toy4.global.response.dto.CommonResponse;
 import com.toy4.global.response.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
-
-import static com.toy4.global.response.type.ErrorCode.*;
 
 
 @Slf4j
@@ -28,33 +32,43 @@ public class GlobalExceptionHandler {
     private final ResponseService responseService;
 
     @ExceptionHandler(EmployeeException.class)
-    public CommonResponse<?> handleEmployeeException(EmployeeException e) {
+    public ResponseEntity<?> handleEmployeeException(EmployeeException e) {
         log.error("{} is occurred. {}", e.getErrorCode(), e.getErrorMessage());
-        return responseService.failure(e.getErrorCode());
+//        return responseService.failure(e.getErrorCode());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(responseService.failure(e.getErrorCode()));
     }
 
     @ExceptionHandler(PositionException.class)
-    public CommonResponse<?> handlePositionException(PositionException e) {
+    public ResponseEntity<?> handlePositionException(PositionException e) {
         log.error("{} is occurred. {}", e.getErrorCode(), e.getErrorMessage());
-        return responseService.failure(e.getErrorCode());
+//        return responseService.failure(e.getErrorCode());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(responseService.failure(e.getErrorCode()));
     }
 
     @ExceptionHandler(StatusException.class)
-    public CommonResponse<?> handleStatusException(StatusException e) {
+    public ResponseEntity<?> handleStatusException(StatusException e) {
         log.error("{} is occurred. {}", e.getErrorCode(), e.getErrorMessage());
-        return responseService.failure(e.getErrorCode());
+//        return responseService.failure(e.getErrorCode());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(responseService.failure(e.getErrorCode()));
     }
 
     @ExceptionHandler(DepartmentException.class)
-    public CommonResponse<?> handleDepartmentException(DepartmentException e) {
+    public ResponseEntity<?> handleDepartmentException(DepartmentException e) {
         log.error("{} is occurred. {}", e.getErrorCode(), e.getErrorMessage());
-        return responseService.failure(e.getErrorCode());
+//        return responseService.failure(e.getErrorCode());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(responseService.failure(e.getErrorCode()));
     }
 
     @ExceptionHandler(DayOffByPositionException.class)
-    public CommonResponse<?> handleDayOffByPositionException(DayOffByPositionException e) {
+    public ResponseEntity<?> handleDayOffByPositionException(DayOffByPositionException e) {
         log.error("{} is occurred. {}", e.getErrorCode(), e.getErrorMessage());
-        return responseService.failure(e.getErrorCode());
+//        return responseService.failure(e.getErrorCode());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(responseService.failure(e.getErrorCode()));
     }
 
     @ExceptionHandler(ScheduleException.class)
@@ -64,33 +78,43 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public CommonResponse<?> handleUploadFileException(MaxUploadSizeExceededException e) {
+    public ResponseEntity<?> handleUploadFileException(MaxUploadSizeExceededException e) {
         log.error("MaxUploadSizeExceededException is occurred.", e);
-        return responseService.failure(FILE_MAXIMUM_SIZE);
+//        return responseService.failure(FILE_MAXIMUM_SIZE);
+
+        return ResponseEntity.status(FILE_MAXIMUM_SIZE.getHttpStatus()).body(responseService.failure(FILE_MAXIMUM_SIZE));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public CommonResponse<?> handlerUsernameNotFoundException(UsernameNotFoundException e) {
+    public ResponseEntity<?> handlerUsernameNotFoundException(UsernameNotFoundException e) {
         log.error("UsernameNotFoundException is occurred.", e);
-        return responseService.failure(LOAD_USER_FAILED);
+//        return responseService.failure(LOAD_USER_FAILED);
+
+        return ResponseEntity.status(LOAD_USER_FAILED.getHttpStatus()).body(responseService.failure(LOAD_USER_FAILED));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         log.error("MethodArgumentNotValidException is occurred.", e);
-        return responseService.failure(INVALID_REQUEST);
+//        return responseService.failure(INVALID_REQUEST);
+
+        return ResponseEntity.status(INVALID_REQUEST.getHttpStatus()).body(responseService.failure(INVALID_REQUEST));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public CommonResponse<?> handleDataIntegrityViolationException(DataIntegrityViolationException e){
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException e){
         log.error("DataIntegrityViolationException is occurred.", e);
-        return responseService.failure(CONSTRAINT_VIOLATION);
+//        return responseService.failure(CONSTRAINT_VIOLATION);
+
+        return ResponseEntity.status(CONSTRAINT_VIOLATION.getHttpStatus()).body(responseService.failure(CONSTRAINT_VIOLATION));
     }
 
     @ExceptionHandler(Exception.class)
-    public CommonResponse<?> handleException(Exception e){
+    public ResponseEntity<?> handleException(Exception e){
         log.error("Exception is occurred.", e);
-        return responseService.failure(INTERNAL_SERVER_ERROR);
+//        return responseService.failure(INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR.getHttpStatus()).body(responseService.failure(INTERNAL_SERVER_ERROR));
     }
 
 }
