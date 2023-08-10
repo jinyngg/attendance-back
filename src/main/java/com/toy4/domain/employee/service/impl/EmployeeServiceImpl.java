@@ -14,11 +14,6 @@ import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_T
 import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_STATUS_TYPE;
 import static com.toy4.global.response.type.ErrorCode.LOAD_USER_FAILED;
 import static com.toy4.global.response.type.ErrorCode.MISMATCH_PASSWORD;
-import static com.toy4.global.response.type.SuccessCode.AVAILABLE_EMAIL;
-import static com.toy4.global.response.type.SuccessCode.COMPLETE_CHANGE_PASSWORD;
-import static com.toy4.global.response.type.SuccessCode.COMPLETE_EMAIL_TRANSMISSION;
-import static com.toy4.global.response.type.SuccessCode.COMPLETE_SIGNUP;
-import static com.toy4.global.response.type.SuccessCode.COMPLETE_PERSONAL_INFO_UPDATE;
 import static com.toy4.global.response.type.SuccessCode.SUCCESS;
 
 import com.toy4.domain.dayOffByPosition.domain.DayOffByPosition;
@@ -412,5 +407,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private DayOffByPosition getDayOffByPosition(Long positionId) {
         return dayOffByPositionRepository.findByPositionId(positionId)
                 .orElseThrow(() -> new DayOffByPositionException(INVALID_REQUEST_POSITION_ID));
+    }
+
+    private Employee findEmployee(Long employeeId) {
+        return employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new EmployeeException(ErrorCode.EMPLOYEE_NOT_FOUND));
     }
 }

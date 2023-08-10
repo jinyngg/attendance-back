@@ -1,5 +1,9 @@
 package com.toy4.domain.employee.service;
 
+import com.toy4.domain.employee.dto.ChangePassword;
+import com.toy4.domain.employee.dto.ResetPassword;
+import com.toy4.domain.employee.dto.Signup;
+import com.toy4.domain.employee.dto.ValidateMatchPassword;
 import com.toy4.domain.employee.dto.response.EmployeeInfo;
 import com.toy4.domain.employee.dto.response.PersonalInfo;
 import com.toy4.domain.employee.dto.response.SignupResponse;
@@ -25,6 +29,7 @@ public interface EmployeeService {
 
     // 비밀번호 변경(로그인)
     void changePassword(ChangePassword request, Long employeeId);
+
 
     void updateEmployeeInfo(EmployeeInfo dto, MultipartFile profileImageFile);
   
