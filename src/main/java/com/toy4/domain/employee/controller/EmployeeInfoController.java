@@ -32,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ROLE_USER')")
 @Log4j2
 public class EmployeeInfoController {
 
@@ -42,18 +41,21 @@ public class EmployeeInfoController {
     private final BindingResultHandler bindingResultHandler;
 
     @GetMapping(path = "/personal-info/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> getPersonalInfo(@PathVariable Long id) {
         CommonResponse<?> response = employeeService.getEmployeeInfo(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(path = "/my-page/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> getMyPage(@PathVariable Long id) {
         CommonResponse<?> response = employeeService.getMyPage(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(path = "/personal-info/schedules/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public CommonResponse<?> getPersonalInfoSchedules(
             @Valid @PathVariable Long id) {
         ScheduleResponse response = scheduleMainService.getSchedules(id);
@@ -62,6 +64,7 @@ public class EmployeeInfoController {
 
     @PutMapping(path = "/personal-info", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> updatePersonalInfo(
             @Validated @RequestPart(value = "personalInfoRequest") PersonalInfoRequest personalInfoRequest,
             @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,

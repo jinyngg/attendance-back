@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RestController
 public class EmployeeAdminController {
 
@@ -31,12 +30,14 @@ public class EmployeeAdminController {
     private final BindingResultHandler bindingResultHandler;
 
     @GetMapping("/employees")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getEmployees() {
         CommonResponse<?> response = employeeService.getEmployeeDayOffInfo();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(path = "/employee/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
         public ResponseEntity<?> getEmployeeInfo(@PathVariable Long id) {
             CommonResponse<?> response = employeeService.getEmployeeInfo(id);
         return ResponseEntity.ok(response);
@@ -44,6 +45,7 @@ public class EmployeeAdminController {
 
     @PutMapping(path = "/employee", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateEmployeeInfo(
             @RequestPart(value = "employeeInfoRequest") EmployeeInfoRequest employeeInfoRequest,
             @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,
