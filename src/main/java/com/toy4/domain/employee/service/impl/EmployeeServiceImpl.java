@@ -94,7 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeProfileImageService.removeIfFileExists(employeeImagePath);
         }
 
-        if ((profileImageFile != null) && (!profileImageFile.isEmpty())) {
+        if (profileImageFile != null && !profileImageFile.isEmpty()) {
             profileImagePath = employeeProfileImageService.saveFile(profileImageFile);
         }
 
@@ -139,7 +139,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeProfileImageService.removeIfFileExists(employeeImagePath);
         }
 
-        if ((profileImageFile != null) && (!profileImageFile.isEmpty())) {
+        if (profileImageFile != null && !profileImageFile.isEmpty()) {
             profileImagePath = employeeProfileImageService.saveFile(profileImageFile);
         }
 
@@ -396,3 +396,4 @@ public class EmployeeServiceImpl implements EmployeeService {
             .orElseThrow(() -> new EmployeeException(ErrorCode.EMPLOYEE_NOT_FOUND));
     }
 }
+

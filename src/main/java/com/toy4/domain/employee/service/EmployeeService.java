@@ -30,6 +30,7 @@ public interface EmployeeService {
     // 비밀번호 변경(로그인)
     void changePassword(ChangePassword request, Long employeeId);
 
+
     void updateEmployeeInfo(EmployeeInfo dto, MultipartFile profileImageFile);
   
     CommonResponse<?> getEmployeeInfo(Long id);

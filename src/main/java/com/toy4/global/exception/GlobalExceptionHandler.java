@@ -13,6 +13,7 @@ import com.toy4.domain.employee.exception.EmployeeException;
 import com.toy4.domain.position.exception.PositionException;
 import com.toy4.domain.schedule.ScheduleException;
 import com.toy4.domain.status.exception.StatusException;
+import com.toy4.global.response.dto.CommonResponse;
 import com.toy4.global.response.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
