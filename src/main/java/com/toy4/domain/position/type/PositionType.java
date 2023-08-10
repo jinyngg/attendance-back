@@ -20,9 +20,9 @@ public enum PositionType {
 
   private final String description;
 
-  public static PositionType getByTypeString(String type) {
+  public static PositionType getByDescription(String description) {
     return Arrays.stream(values())
-        .filter(positionType -> positionType.description.equals(type))
+        .filter(positionType -> positionType.getDescription().equals(description))
         .findFirst()
         .orElseThrow(() -> new PositionException(ErrorCode.INVALID_REQUEST_POSITION_TYPE));
   }
