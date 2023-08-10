@@ -14,7 +14,6 @@ import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_T
 import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_STATUS_TYPE;
 import static com.toy4.global.response.type.ErrorCode.LOAD_USER_FAILED;
 import static com.toy4.global.response.type.ErrorCode.MISMATCH_PASSWORD;
-import static com.toy4.global.response.type.SuccessCode.COMPLETE_PERSONAL_INFO_UPDATE;
 import static com.toy4.global.response.type.SuccessCode.SUCCESS;
 
 import com.toy4.domain.dayOffByPosition.domain.DayOffByPosition;
@@ -27,8 +26,6 @@ import com.toy4.domain.department.repository.DepartmentRepository;
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.domain.Employee;
 import com.toy4.domain.employee.dto.ChangePassword;
-import com.toy4.domain.employee.dto.EmployeeDto;
-
 import com.toy4.domain.employee.dto.ResetPassword;
 import com.toy4.domain.employee.dto.Signup;
 import com.toy4.domain.employee.dto.ValidateMatchPassword;
@@ -124,8 +121,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return responseService.success(response, SUCCESS);
     }
 
-
-
     @Override
     @Transactional
     public void updatePersonalInfo(PersonalInfo dto, MultipartFile profileImageFile) {
@@ -207,42 +202,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return SignupResponse.builder().id(employee.getId()).build();
     }
 
-//    @Override
-//    @Transactional
-//    public CommonResponse<?> login(EmployeeDto request) {
-//        // 1. 이메일로 회원 정보 확인
-//        Employee employee = getEmployeeByEmail(request.getEmail());
-//
-//        // 2. 비밀번호 확인
-//        validatePasswordWithDB(request.getPassword(), employee.getPassword());
-//
-//        // 3. 토큰 발급
-//        TokenDto token = jwtProvider.generateToken(request.getEmail(), request.getRole());
-//        String refreshToken = token.getRefreshToken();
-//
-//        Long employeeId = employee.getId();
-//        RefreshToken currentToken = refreshTokenRepository.findByKey(employeeId).orElse(null);
-//        if (currentToken != null) {
-//            currentToken.updateToken(refreshToken);
-//            refreshTokenRepository.save(currentToken);
-//        } else {
-//            refreshTokenRepository.save(
-//                    RefreshToken.builder()
-//                            .key(employeeId)
-//                            .token(refreshToken)
-//                            .build());
-//        }
-//
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put("id", employeeId);
-//        map.put("token", token);
-//
-//        return responseService.success(map, SUCCESS);
-//    }
-
-    /**
-     * 인증 이메일 전송
-     */
     @Override
     public void sendPasswordChangeEmail(String email) {
 
@@ -269,7 +228,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                         "        감사합니다." +
                         "    </p>" +
                         "    <a style=\"color: #FFF; text-decoration: none; text-align: center;\"" +
-                        "    href=\"https://soonyang.vercel.app/auth/change_password?authToken=" + employee.getAuthToken() + "\" target=\"_blank\">" +
+                        "    href=\"https://soonyang.vercel.app/reset-pw?authToken=" + employee.getAuthToken() + "\" target=\"_blank\">" +
                         "        <p" +
                         "            style=\"display: inline-block; width: 250px; height: 45px; margin: 30px auto; background: #00a7e1; line-height: 45px; vertical-align: middle; font-size: 16px;\">" +
                         "            비밀번호 변경" +
