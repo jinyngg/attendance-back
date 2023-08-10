@@ -7,6 +7,7 @@ import com.toy4.domain.dutyHistory.service.DutyHistoryService;
 import com.toy4.global.response.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RestController
 public class DutyHistoryAdminController {
 
