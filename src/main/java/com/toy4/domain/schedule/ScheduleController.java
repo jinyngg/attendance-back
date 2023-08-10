@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/schedules")
-@PreAuthorize("hasRole('ROLE_USER')")
 @RestController
 public class ScheduleController {
 
@@ -21,6 +20,7 @@ public class ScheduleController {
     private final ResponseService responseService;
 
     @GetMapping("/{employeeId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public CommonResponse<?> getSchedules(
             @PathVariable Long employeeId) {
 

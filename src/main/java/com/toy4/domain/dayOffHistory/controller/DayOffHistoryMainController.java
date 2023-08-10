@@ -22,7 +22,6 @@ import java.net.URI;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@PreAuthorize("hasRole('ROLE_USER')")
 @RestController
 public class DayOffHistoryMainController {
 
@@ -31,6 +30,7 @@ public class DayOffHistoryMainController {
     private final BindingResultHandler bindingResultHandler;
 
     @PostMapping("/schedules/day-off")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> requestDayOffRegistration(
             @Valid @RequestBody DayOffRegistrationRequest requestBody,
             BindingResult bindingResult) {
@@ -49,6 +49,7 @@ public class DayOffHistoryMainController {
     }
 
     @PutMapping("/schedules/day-off/{dayOffId}/status")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> requestDayOffCancellation(
             @PathVariable("dayOffId") Long dayOffHistoryId,
             @Valid @RequestBody DayOffCancellationRequest requestBody,
@@ -67,6 +68,7 @@ public class DayOffHistoryMainController {
     }
 
     @PutMapping("/schedules/day-off/{dayOffId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> requestDayOffUpdate(
             @PathVariable("dayOffId") Long dayOffHistoryId,
             @Valid @RequestBody DayOffModificationRequest requestBody,
