@@ -2,9 +2,7 @@ package com.toy4.domain.employee.dto.request;
 
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.dto.response.PersonalInfo;
-
 import lombok.*;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;

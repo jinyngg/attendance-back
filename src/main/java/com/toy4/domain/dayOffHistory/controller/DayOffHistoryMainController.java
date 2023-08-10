@@ -1,12 +1,11 @@
 package com.toy4.domain.dayOffHistory.controller;
 
-import com.toy4.domain.dayOffHistory.dto.DayOffCancellationRequest;
-import com.toy4.domain.dayOffHistory.dto.DayOffModificationRequest;
-import com.toy4.domain.dayOffHistory.dto.DayOffRegistrationRequest;
+import com.toy4.domain.dayOffHistory.dto.request.DayOffCancellationRequest;
+import com.toy4.domain.dayOffHistory.dto.request.DayOffModificationRequest;
+import com.toy4.domain.dayOffHistory.dto.request.DayOffRegistrationRequest;
 import com.toy4.domain.dayOffHistory.service.DayOffHistoryMainService;
-import com.toy4.domain.dayoff.exception.DayOffException;
+import com.toy4.domain.dayOffHistory.exception.DayOffHistoryException;
 import com.toy4.global.response.service.ResponseService;
-import com.toy4.global.response.type.ErrorCode;
 import com.toy4.global.response.type.SuccessCode;
 import com.toy4.global.utils.BindingResultHandler;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +33,11 @@ public class DayOffHistoryMainController {
             @Valid @RequestBody DayOffRegistrationRequest requestBody,
             BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasFieldErrors()) {
             log.info("[POST /api/schedules/day-off] errors: {}", bindingResult.getFieldErrors());
+            String errorMessage = bindingResultHandler.getErrorMessageFromBindingResult(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(responseService.failure(ErrorCode.INVALID_REQUEST));
+                    .body(responseService.failure(errorMessage));
         }
 
         dayOffHistoryMainService.registerDayOff(requestBody.toDto());
@@ -59,7 +59,7 @@ public class DayOffHistoryMainController {
                     .body(responseService.failure(errorMessage));
         }
 
-        dayOffHistoryMainService.cancelDayOffRegistrationRequest(dayOffHistoryId, requestBody);
+        dayOffHistoryMainService.cancelDayOffRegistrationRequest(dayOffHistoryId, requestBody.toDto());
 
         return ResponseEntity.ok(responseService.success(null, SuccessCode.SUCCESS));
     }
@@ -83,7 +83,7 @@ public class DayOffHistoryMainController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleDayOffException(DayOffException e) {
+    public ResponseEntity<?> handleDayOffHistoryException(DayOffHistoryException e) {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(responseService.failure(e.getErrorCode()));
     }

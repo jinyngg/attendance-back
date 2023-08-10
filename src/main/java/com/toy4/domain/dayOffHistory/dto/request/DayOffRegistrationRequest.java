@@ -1,14 +1,21 @@
-package com.toy4.domain.dayOffHistory.dto;
+package com.toy4.domain.dayOffHistory.dto.request;
 
+import com.toy4.domain.dayOffHistory.dto.DayOffRegistration;
 import com.toy4.domain.dayoff.type.DayOffType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Getter
-public class DayOffModificationRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class DayOffRegistrationRequest {
 
     @NotNull
     private Long employeeId;
@@ -21,8 +28,8 @@ public class DayOffModificationRequest {
     @NotBlank
     private String reason;
 
-    public DayOffHistoryMainDto toDto() {
-        return DayOffHistoryMainDto.builder()
+    public DayOffRegistration toDto() {
+        return DayOffRegistration.builder()
                 .employeeId(employeeId)
                 .startDate(startDate)
                 .endDate(endDate)

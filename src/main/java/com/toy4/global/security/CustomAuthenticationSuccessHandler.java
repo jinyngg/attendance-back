@@ -4,8 +4,11 @@ import static com.toy4.global.response.type.ErrorCode.INVALID_EMAIL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toy4.domain.employee.domain.Employee;
+import com.toy4.domain.employee.dto.EmployeeLogin;
+import com.toy4.domain.employee.dto.response.LoginResponse;
 import com.toy4.domain.employee.exception.EmployeeException;
 import com.toy4.domain.employee.repository.EmployeeRepository;
+import com.toy4.domain.employee.type.EmployeeRole;
 import com.toy4.domain.loginHistory.dto.LoginHistoryDto;
 import com.toy4.domain.loginHistory.service.LoginHistoryService;
 import com.toy4.domain.refreshToken.domain.RefreshToken;
@@ -16,7 +19,6 @@ import com.toy4.global.response.type.SuccessCode;
 import com.toy4.global.token.dto.TokenDto;
 import com.toy4.global.utils.RequestUtils;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,9 +53,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         Employee employee = getEmployeeByEmail(email);
         Long employeeId = employee.getId();
+        EmployeeRole role = employee.getRole();
 
-        TokenDto token = jwtProvider.generateToken(employee.getEmail(), employee.getRole());
+        TokenDto token = jwtProvider.generateToken(employee.getEmail(), role);
         String refreshToken = token.getRefreshToken();
+
+        EmployeeLogin employeeLogin = EmployeeLogin.builder()
+                .id(employeeId)
+                .role(role)
+                .build();
 
         RefreshToken currentToken = refreshTokenRepository.findByKey(employeeId).orElse(null);
         if (currentToken != null) {
@@ -76,9 +84,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                         .userAgent(userAgent)
                         .build());
 
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("id", employeeId);
-        data.put("token", token);
+        LoginResponse data = LoginResponse.builder()
+                .employee(employeeLogin)
+                .token(token)
+                .build();
 
         String loginSuccessMessage = objectMapper.writeValueAsString(
                 CommonResponse.builder()

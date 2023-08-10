@@ -1,6 +1,5 @@
-package com.toy4.domain.dayOffHistory.dto;
+package com.toy4.domain.dutyHistory.dto;
 
-import com.toy4.domain.dayoff.type.DayOffType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +10,9 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class DayOffHistoryMainDto {
+public class DutyRegistration {
 
     private final Long employeeId;
-    private final LocalDate startDate;
-    private final LocalDate endDate;
-    private final DayOffType type;
+    private final LocalDate date;
     private final String reason;
 }

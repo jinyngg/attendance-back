@@ -6,6 +6,7 @@ import static com.toy4.domain.status.type.StatusType.JOINED;
 import static com.toy4.global.response.type.ErrorCode.ALREADY_EXISTS_EMAIL;
 import static com.toy4.global.response.type.ErrorCode.ALREADY_EXISTS_PHONE;
 import static com.toy4.global.response.type.ErrorCode.DAY_OFF_HISTORIES_NOT_FOUND;
+import static com.toy4.global.response.type.ErrorCode.EMPLOYEE_NOT_FOUND;
 import static com.toy4.global.response.type.ErrorCode.INVALID_EMAIL;
 import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_DEPARTMENT_TYPE;
 import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_ID;
@@ -17,6 +18,7 @@ import static com.toy4.global.response.type.SuccessCode.AVAILABLE_EMAIL;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_CHANGE_PASSWORD;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_EMAIL_TRANSMISSION;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_SIGNUP;
+import static com.toy4.global.response.type.SuccessCode.COMPLETE_PERSONAL_INFO_UPDATE;
 import static com.toy4.global.response.type.SuccessCode.SUCCESS;
 
 import com.toy4.domain.dayOffByPosition.domain.DayOffByPosition;
@@ -28,12 +30,16 @@ import com.toy4.domain.department.exception.DepartmentException;
 import com.toy4.domain.department.repository.DepartmentRepository;
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.domain.Employee;
-import com.toy4.domain.employee.dto.response.EmployeeDto;
+import com.toy4.domain.employee.dto.ChangePassword;
+import com.toy4.domain.employee.dto.ResetPassword;
+import com.toy4.domain.employee.dto.Signup;
+import com.toy4.domain.employee.dto.ValidateMatchPassword;
 import com.toy4.domain.employee.dto.response.EmployeeDayOffInfoResponse;
 import com.toy4.domain.employee.dto.response.EmployeeInfo;
 import com.toy4.domain.employee.dto.response.MyPageResponse;
 import com.toy4.domain.employee.dto.response.PersonalInfo;
 import com.toy4.domain.employee.dto.response.PersonalInfoResponse;
+import com.toy4.domain.employee.dto.response.SignupResponse;
 import com.toy4.domain.employee.exception.EmployeeException;
 import com.toy4.domain.employee.repository.EmployeeRepository;
 import com.toy4.domain.employee.service.EmployeeService;
@@ -104,18 +110,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public CommonResponse<?> getEmployeeInfo(Long id) {
+
         Employee employee = findEmployee(id);
+
         PersonalInfoResponse response = PersonalInfoResponse.from(employee);
         return responseService.success(response, SUCCESS);
     }
 
-	@Override
+
+    @Override
     @Transactional(readOnly = true)
-	public CommonResponse<?> getMyPage(Long id) {
+    public CommonResponse<?> getMyPage(Long id) {
+      
         Employee employee = findEmployee(id);
-		MyPageResponse response = MyPageResponse.from(employee);
-		return responseService.success(response, SUCCESS);
-	}
+     
+        MyPageResponse response = MyPageResponse.from(employee);
+        return responseService.success(response, SUCCESS);
+    }
+
 
 
     @Override
@@ -153,58 +165,58 @@ public class EmployeeServiceImpl implements EmployeeService {
         return responseService.success(employeeDayOffInfos, SUCCESS);
     }
 
-   
-   @Override
-   public CommonResponse<?> validateUniqueEmail(String email) {
-       // 1. 유효성 검사(이메일 중복 확인)
-       validateEmailDuplication(email);
-       return responseService.successWithNoContent(AVAILABLE_EMAIL);
-   }
 
-   @Override
-   @Transactional
-   public CommonResponse<?> signup(EmployeeDto request) {
-//   public CommonResponse<?> signup(EmployeeDto request, MultipartFile profileImageFile) {
-       // 1. 유효성 검사(이메일 및 전화번호 중복 확인)
-       validateEmailDuplication(request.getEmail());
-       validatePhoneDuplication(request.getPhone());
+//   @Override
+//   public CommonResponse<?> validateUniqueEmail(String email) {
+//       // 1. 유효성 검사(이메일 중복 확인)
+//       validateEmailDuplication(email);
+//       return responseService.successWithNoContent(AVAILABLE_EMAIL);
+//   }
 
-       // 2. 유효성 검사(비밀번호 일치 여부 확인)
-       validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
+    @Override
+    public void validateUniqueEmail(String email) {
+        // 1. 유효성 검사(이메일 중복 확인)
+        validateEmailDuplication(email);
+    }
 
-       // 3. 이미지 정보 확인
-//       String profileImagePath = profileImageFile.isEmpty() ?
-//               employeeProfileImageService.getDefaultFile()
-////               : employeeProfileImageService.saveFile(request.getId(), profileImageFile);
-//               : employeeProfileImageService.saveFile(profileImageFile);
+    @Override
+    @Transactional
+    public SignupResponse signup(Signup request) {
+        // 1. 유효성 검사(이메일 및 전화번호 중복 확인)
+        validateEmailDuplication(request.getEmail());
+        validatePhoneDuplication(request.getPhone());
 
-       String profileImagePath = employeeProfileImageService.getDefaultFile();
+        // 2. 유효성 검사(비밀번호 일치 여부 확인)
+        validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
 
-       // 4. 저장 정보 확인
-       Department department = getDepartmentByType(request.getDepartmentType());
-       Position position = getPositionByType(STAFF);
-       Status status = getStatusByType(JOINED);
+        // 3. 기본 프로필 이미지 가져오기
+        String profileImagePath = employeeProfileImageService.getDefaultFile();
 
-       // 5. 직급별 연차 개수 확인
-       DayOffByPosition dayOffByPosition = getDayOffByPosition(position.getId());
+        // 4. 기본 정보(부서, 직급, 상태) 가져오기
+        Department department = getDepartmentByType(request.getDepartmentType());
+        Position position = getPositionByType(STAFF);
+        Status status = getStatusByType(JOINED);
 
-       // 6. 회원 정보 저장
-       Employee employee = employeeRepository.save(Employee.builder()
-               .authToken(UUID.randomUUID().toString())
-               .profileImagePath(profileImagePath)
-               .position(position)
-               .department(department)
-               .status(status)
-               .name(request.getName())
-               .email(request.getEmail())
-               .phone(request.getPhone())
-               .password(passwordEncoder.encode(request.getPassword()))
-               .hireDate(request.getHireDate())
-               .dayOffRemains((float) dayOffByPosition.getAmount())
-               .role(USER)
-               .build());
+        // 5. 직급별 연차 개수 확인
+        DayOffByPosition dayOffByPosition = getDayOffByPosition(position.getId());
 
-        return responseService.success(employee.getId(), COMPLETE_SIGNUP);
+        // 6. 회원 정보 저장
+        Employee employee = employeeRepository.save(Employee.builder()
+                .authToken(UUID.randomUUID().toString())
+                .profileImagePath(profileImagePath)
+                .position(position)
+                .department(department)
+                .status(status)
+                .name(request.getName())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .hireDate(request.getHireDate())
+                .dayOffRemains((float) dayOffByPosition.getAmount())
+                .role(USER)
+                .build());
+
+        return SignupResponse.builder().id(employee.getId()).build();
     }
 
 //    @Override
@@ -244,7 +256,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 인증 이메일 전송
      */
     @Override
-    public CommonResponse<?> sendPasswordChangeEmail(String email) {
+    public void sendPasswordChangeEmail(String email) {
 
         Employee employee = getEmployeeByEmail(email);
 
@@ -282,13 +294,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         text.append("</html>");
 
         mailComponents.sendMail(employee.getEmail(), title, text.toString());
-        return responseService.successWithNoContent(COMPLETE_EMAIL_TRANSMISSION);
     }
 
     @Override
-    public CommonResponse<?> changePassword(EmployeeDto request, String authToken) {
+    public void resetPassword(ResetPassword request) {
         // 1. 유효성 검사(인증토큰)
-        Employee employee = getEmployeeByAuthToken(authToken);
+        Employee employee = getEmployeeByAuthToken(request.getAuthToken());
 
         // 2. 유효성 검사(비밀번호 일치 여부 확인)
         validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
@@ -297,22 +308,60 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.updatePassword(passwordEncoder.encode(request.getPassword()));
         employee.updateNewAuthToken(UUID.randomUUID().toString());
         employeeRepository.save(employee);
+    }
 
-        return responseService.successWithNoContent(COMPLETE_CHANGE_PASSWORD);
+    @Override
+    public void changePassword(ChangePassword request, Long employeeId) {
+        // 1. 유효성 검사(고유 회원 아이디)
+        Employee employee = getEmployeeById(employeeId);
+
+        // 2. 유효성 검사(비밀번호 일치 여부 확인)
+        validatePasswordWithDB(request.getCurrentPassword(), employee.getPassword());
+        validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
+
+        // 3. 비밀번호 변경
+        employee.updatePassword(passwordEncoder.encode(request.getPassword()));
+        employeeRepository.save(employee);
+    }
+
+//    @Override
+//    public CommonResponse<?> validateMatchPasswordWithDB(EmployeeDto request) {
+//        // 1. 유효성 검사(고유 회원 아이디)
+//        Employee employee = getEmployeeById(request.getId());
+//
+//        // 2. 유효성 검사(비밀번호 일치 여부 확인)
+//        validatePasswordWithDB(request.getCurrentPassword(), employee.getPassword());
+//
+//        return responseService.successWithNoContent(MATCH_PASSWORD);
+//    }
+
+    @Override
+    public void validateMatchPasswordWithDB(ValidateMatchPassword request, Long EmployeeId) {
+        // 1. 유효성 검사(고유 회원 아이디)
+        Employee employee = getEmployeeById(EmployeeId);
+
+        // 2. 유효성 검사(비밀번호 일치 여부 확인)
+        validatePasswordWithDB(request.getPassword(), employee.getPassword());
     }
 
     /** 입력받은 비밀번호가 올바른지 확인 */
-   private void validatePasswordWithDB(String inputPassword, String encodedPassword) {
-       if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
-           throw new EmployeeException(MISMATCH_PASSWORD);
-       }
-   }
+    private void validatePasswordWithDB(String inputPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
+            throw new EmployeeException(MISMATCH_PASSWORD);
+        }
+    }
 
-   /** 이메일로 회원 조회 */
-   private Employee getEmployeeByEmail(String email) {
-       return employeeRepository.findByEmail(email)
-               .orElseThrow(() -> new EmployeeException(INVALID_EMAIL));
-   }
+    /** 고유값으로 회원 조회 */
+    private Employee getEmployeeById(Long id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeException(EMPLOYEE_NOT_FOUND));
+    }
+
+    /** 이메일로 회원 조회 */
+    private Employee getEmployeeByEmail(String email) {
+        return employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EmployeeException(INVALID_EMAIL));
+    }
 
     /** authToken 회원 조회 */
     private Employee getEmployeeByAuthToken(String authToken) {
@@ -320,53 +369,48 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new EmployeeException(LOAD_USER_FAILED));
     }
 
-   /** 이메일 중복 여부 확인 */
-   private void validateEmailDuplication(String email) {
-       if (employeeRepository.existsByEmail(email)) {
-           throw new EmployeeException(ALREADY_EXISTS_EMAIL);
-       }
-   }
-
-   /** 전화번호 중복 여부 확인 */
-   private void validatePhoneDuplication(String phone) {
-       if (employeeRepository.existsByPhone(phone)) {
-           throw new EmployeeException(ALREADY_EXISTS_PHONE);
-       }
-   }
-
-   /** 비밀번호 일치 여부 확인 */
-   private void validatePasswordMatch(String password, String confirmPassword) {
-       if (!password.equals(confirmPassword)) {
-          throw new EmployeeException(MISMATCH_PASSWORD);
-       }
-   }
-
-   /** 직급 조회 */
-   private Position getPositionByType(PositionType type) {
-       return positionRepository.findByType(type)
-               .orElseThrow(() -> new PositionException(INVALID_REQUEST_POSITION_TYPE));
+    /** 이메일 중복 여부 확인 */
+    private void validateEmailDuplication(String email) {
+        if (employeeRepository.existsByEmail(email)) {
+            throw new EmployeeException(ALREADY_EXISTS_EMAIL);
+        }
     }
 
-   /** 회원 상태 조회 */
-   private Status getStatusByType(StatusType type) {
-       return statusRepository.findByType(type)
-               .orElseThrow(() -> new StatusException(INVALID_REQUEST_STATUS_TYPE));
-   }
+    /** 전화번호 중복 여부 확인 */
+    private void validatePhoneDuplication(String phone) {
+        if (employeeRepository.existsByPhone(phone)) {
+            throw new EmployeeException(ALREADY_EXISTS_PHONE);
+        }
+    }
 
-   /** 회원 부서 조회 */
-   private Department getDepartmentByType(DepartmentType type) {
-       return departmentRepository.findByType(type)
-               .orElseThrow(() -> new DepartmentException(INVALID_REQUEST_DEPARTMENT_TYPE));
-   }
+    /** 비밀번호 일치 여부 확인 */
+    private void validatePasswordMatch(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new EmployeeException(MISMATCH_PASSWORD);
+        }
+    }
 
-   /** 직급별 연차 개수 조회 */
-   private DayOffByPosition getDayOffByPosition(Long positionId) {
-       return dayOffByPositionRepository.findByPositionId(positionId)
-               .orElseThrow(() -> new DayOffByPositionException(INVALID_REQUEST_POSITION_ID));
-   }
+    /** 직급 조회 */
+    private Position getPositionByType(PositionType type) {
+        return positionRepository.findByType(type)
+                .orElseThrow(() -> new PositionException(INVALID_REQUEST_POSITION_TYPE));
+    }
 
-   private Employee findEmployee(Long employeeId) {
-       return employeeRepository.findById(employeeId)
-           .orElseThrow(() -> new EmployeeException(ErrorCode.EMPLOYEE_NOT_FOUND));
-   }
+    /** 회원 상태 조회 */
+    private Status getStatusByType(StatusType type) {
+        return statusRepository.findByType(type)
+                .orElseThrow(() -> new StatusException(INVALID_REQUEST_STATUS_TYPE));
+    }
+
+    /** 회원 부서 조회 */
+    private Department getDepartmentByType(DepartmentType type) {
+        return departmentRepository.findByType(type)
+                .orElseThrow(() -> new DepartmentException(INVALID_REQUEST_DEPARTMENT_TYPE));
+    }
+
+    /** 직급별 연차 개수 조회 */
+    private DayOffByPosition getDayOffByPosition(Long positionId) {
+        return dayOffByPositionRepository.findByPositionId(positionId)
+                .orElseThrow(() -> new DayOffByPositionException(INVALID_REQUEST_POSITION_ID));
+    }
 }

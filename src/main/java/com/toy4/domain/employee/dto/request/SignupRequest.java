@@ -2,7 +2,6 @@ package com.toy4.domain.employee.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toy4.domain.department.type.DepartmentType;
-import com.toy4.domain.employee.dto.EmployeeDto;
 import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -18,9 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignupRequest {
-
-    // 회원가입 이미지 URL
-//    private String profileImageUrl;
 
     @NotBlank(message = "이메일이 누락되었습니다.")
     @Email(message = "이메일 주소 형식이 잘못되었습니다.")
@@ -47,18 +43,5 @@ public class SignupRequest {
     private LocalDate hireDate;
 
     private DepartmentType department;
-
-    public static EmployeeDto to(SignupRequest request) {
-        return EmployeeDto.builder()
-//                .profileUrl(request.getProfileUrl())
-                .email((request.getEmail()))
-                .phone(request.getPhone())
-                .name(request.name)
-                .password(request.getPassword())
-                .confirmPassword(request.confirmPassword)
-                .hireDate(request.getHireDate())
-                .departmentType(request.getDepartment())
-                .build();
-    }
 
 }

@@ -2,7 +2,8 @@ package com.toy4.domain.dayOffHistory.domain;
 
 import com.toy4.domain.BaseEntity;
 import com.toy4.domain.dayOffHistory.dto.DayOffHistoryDto;
-import com.toy4.domain.dayOffHistory.dto.DayOffHistoryMainDto;
+import com.toy4.domain.dayOffHistory.dto.DayOffModification;
+import com.toy4.domain.dayOffHistory.dto.DayOffRegistration;
 import com.toy4.domain.dayoff.domain.DayOff;
 import com.toy4.domain.employee.domain.Employee;
 import com.toy4.domain.schedule.RequestStatus;
@@ -39,7 +40,7 @@ public class DayOffHistory extends BaseEntity {
     @Column(name = "reason", nullable = false)
     private String reason;
 
-    public static DayOffHistory from(Employee employee, DayOff dayOff, float amount, DayOffHistoryMainDto dto) {
+    public static DayOffHistory from(Employee employee, DayOff dayOff, float amount, DayOffRegistration dto) {
         return DayOffHistory.builder()
                 .employee(employee)
                 .dayOff(dayOff)
@@ -58,7 +59,7 @@ public class DayOffHistory extends BaseEntity {
         this.status = requestStatus;
     }
 
-    public void update(DayOff dayOff, float amount, DayOffHistoryMainDto dto) {
+    public void update(DayOff dayOff, float amount, DayOffModification dto) {
         this.dayOff = dayOff;
         this.startDate = dto.getStartDate();
         this.endDate = dto.getEndDate();

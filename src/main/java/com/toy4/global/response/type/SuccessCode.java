@@ -12,6 +12,8 @@ public enum SuccessCode {
     AVAILABLE_EMAIL("사용 가능한 이메일입니다."),
     AVAILABLE_PASSWORD("사용 가능한 패스워드입니다."),
 
+    MATCH_PASSWORD("비밀번호가 일치합니다."),
+
     COMPLETE_SIGNUP("회원가입이 완료되었습니다."),
     COMPLETE_CHANGE_PASSWORD("비밀번호가 변경되었습니다."),
     COMPLETE_EMAIL_TRANSMISSION("이메일 전송이 완료되었습니다."),
