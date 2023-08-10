@@ -2,7 +2,8 @@ package com.toy4.domain.employee.domain;
 
 import com.toy4.domain.BaseEntity;
 import com.toy4.domain.department.domain.Department;
-import com.toy4.domain.employee.dto.EmployeeDto;
+import com.toy4.domain.employee.dto.response.EmployeeInfo;
+import com.toy4.domain.employee.dto.response.PersonalInfo;
 import com.toy4.domain.employee.type.EmployeeRole;
 import com.toy4.domain.loginHistory.domain.LoginHistory;
 import com.toy4.domain.position.domain.Position;
@@ -105,13 +106,20 @@ public class Employee extends BaseEntity {
         this.lastLoginAt = LocalDateTime.now();
     }
   
-    public void updateEmployeeInfo (EmployeeDto employeeDto, String profileImagePath) {
-        this.department = employeeDto.getDepartment();
-        this.position = employeeDto.getPosition();
+    public void updateEmployeeInfo (Department department, Position position, EmployeeInfo dto, String profileImagePath) {
+        this.department = department;
+        this.position = position;
         this.profileImagePath= profileImagePath;
-        this.phone = employeeDto.getPhone();
-        this.name = employeeDto.getName();
-        this.hireDate = employeeDto.getHireDate();
+        this.phone = dto.getPhone();
+        this.name = dto.getName();
+        this.hireDate = dto.getHireDate();
+    }
+
+    public void updatePersonalInfo (Department department, PersonalInfo dto, String profileImagePath) {
+        this.department = department;
+        this.profileImagePath= profileImagePath;
+        this.phone = dto.getPhone();
+        this.name = dto.getName();
     }
 
     public void updateDayOffRemains(float remainingDaysOff) {

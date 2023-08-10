@@ -41,11 +41,11 @@ public class EmployeeProfileImageService {
 	}
 
 	public String getDefaultFile() {
-		return "/user.png";
+		return "/images/default/user.png";
 	}
 
 	public void removeIfFileExists(String imagePath) {
-		Path path = Paths.get(fileUploadConfig.getFileUploadPath() + imagePath.replace("/images/profile", ""));
+		Path path = Paths.get(fileUploadConfig.getFileUploadPath() + imagePath.replace("/images/", ""));
 		if (Files.exists(path)) {
 			removeFile(path);
 

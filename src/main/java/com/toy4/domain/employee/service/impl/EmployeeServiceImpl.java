@@ -14,6 +14,10 @@ import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_POSITION_T
 import static com.toy4.global.response.type.ErrorCode.INVALID_REQUEST_STATUS_TYPE;
 import static com.toy4.global.response.type.ErrorCode.LOAD_USER_FAILED;
 import static com.toy4.global.response.type.ErrorCode.MISMATCH_PASSWORD;
+import static com.toy4.global.response.type.SuccessCode.AVAILABLE_EMAIL;
+import static com.toy4.global.response.type.SuccessCode.COMPLETE_CHANGE_PASSWORD;
+import static com.toy4.global.response.type.SuccessCode.COMPLETE_EMAIL_TRANSMISSION;
+import static com.toy4.global.response.type.SuccessCode.COMPLETE_SIGNUP;
 import static com.toy4.global.response.type.SuccessCode.COMPLETE_PERSONAL_INFO_UPDATE;
 import static com.toy4.global.response.type.SuccessCode.SUCCESS;
 
@@ -27,12 +31,13 @@ import com.toy4.domain.department.repository.DepartmentRepository;
 import com.toy4.domain.department.type.DepartmentType;
 import com.toy4.domain.employee.domain.Employee;
 import com.toy4.domain.employee.dto.ChangePassword;
-import com.toy4.domain.employee.dto.EmployeeDto;
 import com.toy4.domain.employee.dto.ResetPassword;
 import com.toy4.domain.employee.dto.Signup;
 import com.toy4.domain.employee.dto.ValidateMatchPassword;
 import com.toy4.domain.employee.dto.response.EmployeeDayOffInfoResponse;
+import com.toy4.domain.employee.dto.response.EmployeeInfo;
 import com.toy4.domain.employee.dto.response.MyPageResponse;
+import com.toy4.domain.employee.dto.response.PersonalInfo;
 import com.toy4.domain.employee.dto.response.PersonalInfoResponse;
 import com.toy4.domain.employee.dto.response.SignupResponse;
 import com.toy4.domain.employee.exception.EmployeeException;
@@ -80,48 +85,72 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public CommonResponse<?> updateEmployeeInfo(EmployeeDto employeeDto, MultipartFile profileImageFile) {
-        Employee employee = employeeRepository.findById(employeeDto.getId())
-                .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+    public void updateEmployeeInfo(EmployeeInfo dto, MultipartFile profileImageFile) {
+
+        Employee employee = findEmployee(dto.getEmployeeId());
 
         String profileImagePath = employeeProfileImageService.getDefaultFile();
         String employeeImagePath = employee.getProfileImagePath();
 
         if (employeeImagePath != null) {
-            employeeProfileImageService.removeIfFileExists(employee.getProfileImagePath());
+            employeeProfileImageService.removeIfFileExists(employeeImagePath);
         }
 
         if ((profileImageFile != null) && (!profileImageFile.isEmpty())) {
             profileImagePath = employeeProfileImageService.saveFile(profileImageFile);
         }
 
-        Department department = getDepartmentByType(employeeDto.getDepartmentType());
-        employeeDto.addDepartment(department);
+        Department department = getDepartmentByType(dto.getDepartmentType());
+        Position position = getPositionByType(dto.getPositionType());
 
-        Position position = getPositionByType(employeeDto.getPositionType());
-        employeeDto.addPosition(position);
-
-        employee.updateEmployeeInfo(employeeDto, profileImagePath);
+        employee.updateEmployeeInfo(department, position, dto, profileImagePath);
         employeeRepository.save(employee);
-
-        return responseService.success(employee.getId(), COMPLETE_PERSONAL_INFO_UPDATE);
     }
 
     @Override
     @Transactional(readOnly = true)
     public CommonResponse<?> getEmployeeInfo(Long id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+
+        Employee employee = findEmployee(id);
+
         PersonalInfoResponse response = PersonalInfoResponse.from(employee);
         return responseService.success(response, SUCCESS);
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public CommonResponse<?> getMyPage(Long id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new EmployeeException(ErrorCode.ENTITY_NOT_FOUND));
+      
+        Employee employee = findEmployee(id);
+     
         MyPageResponse response = MyPageResponse.from(employee);
         return responseService.success(response, SUCCESS);
+    }
+
+
+
+    @Override
+    @Transactional
+    public void updatePersonalInfo(PersonalInfo dto, MultipartFile profileImageFile) {
+
+        Employee employee = findEmployee(dto.getEmployeeId());
+
+        String profileImagePath = employeeProfileImageService.getDefaultFile();
+        String employeeImagePath = employee.getProfileImagePath();
+
+        if (employeeImagePath != null) {
+            employeeProfileImageService.removeIfFileExists(employeeImagePath);
+        }
+
+        if ((profileImageFile != null) && (!profileImageFile.isEmpty())) {
+            profileImagePath = employeeProfileImageService.saveFile(profileImageFile);
+        }
+
+        Department department = getDepartmentByType(dto.getDepartmentType());
+
+        employee.updatePersonalInfo(department, dto, profileImagePath);
+        employeeRepository.save(employee);
     }
 
     @Override

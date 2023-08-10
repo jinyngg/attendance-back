@@ -1,6 +1,7 @@
 package com.toy4.domain.employee.service;
 
-import com.toy4.domain.employee.dto.*;
+import com.toy4.domain.employee.dto.response.EmployeeInfo;
+import com.toy4.domain.employee.dto.response.PersonalInfo;
 import com.toy4.domain.employee.dto.response.SignupResponse;
 import com.toy4.global.response.dto.CommonResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,13 +26,14 @@ public interface EmployeeService {
     // 비밀번호 변경(로그인)
     void changePassword(ChangePassword request, Long employeeId);
 
-
-    CommonResponse<?> updateEmployeeInfo(EmployeeDto employeeDto, MultipartFile file);
-
+    void updateEmployeeInfo(EmployeeInfo dto, MultipartFile profileImageFile);
+  
     CommonResponse<?> getEmployeeInfo(Long id);
-
+  
     CommonResponse<?> getMyPage(Long id);
-
+  
+    void updatePersonalInfo(PersonalInfo dto, MultipartFile profileImageFile);
+  
     CommonResponse<?> getEmployeeDayOffInfo();
 
 }
