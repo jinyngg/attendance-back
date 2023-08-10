@@ -11,6 +11,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public enum ErrorCode {
 
+    NO_ACCESS(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),
+
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "로그인에 실패했습니다."),
     LOAD_USER_FAILED(HttpStatus.UNAUTHORIZED, "회원 정보를 불러오는데 실패했습니다."),
 
