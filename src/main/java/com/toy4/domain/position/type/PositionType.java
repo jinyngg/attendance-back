@@ -1,8 +1,7 @@
 package com.toy4.domain.position.type;
 
 import java.util.Arrays;
-
-import com.toy4.domain.dayoff.exception.DayOffException;
+import com.toy4.domain.position.exception.PositionException;
 import com.toy4.global.response.type.ErrorCode;
 
 import lombok.AllArgsConstructor;
@@ -21,10 +20,10 @@ public enum PositionType {
 
   private final String description;
 
-  public static PositionType getByTypeString(String type) {
+  public static PositionType getByDescription(String description) {
     return Arrays.stream(values())
-        .filter(positionType -> positionType.description.equals(type))
+        .filter(positionType -> positionType.getDescription().equals(description))
         .findFirst()
-        .orElseThrow(() -> new DayOffException(ErrorCode.INVALID_DAY_OFF_TYPE));
+        .orElseThrow(() -> new PositionException(ErrorCode.INVALID_REQUEST_POSITION_TYPE));
   }
 }

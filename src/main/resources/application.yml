@@ -5,12 +5,12 @@ server:
 file:
   upload:
     path:
-      windows: D:\\attendance\\images\\
+      windows: D:\\attendance\\images/
       linux: /home/ubuntu/attendance/images/
 
 
 logging.level.org.hibernate:
-  sql: DEBUG
+  SQL: DEBUG
   type.descriptor.sql.BasicBinder: TRACE
 
 spring:
@@ -19,7 +19,6 @@ spring:
       enabled: true
       max-file-size: 10MB
       max-request-size: 30MB
-
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
@@ -32,12 +31,14 @@ spring:
     url: jdbc:h2:tcp://localhost/~/attendance/db;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true
     driver-class-name: org.h2.Driver
     username: sa
+    password: sa
 
   sql:
     init:
       mode: always
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
+
 
   h2:
     console:
@@ -62,10 +63,6 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-  web:
-    resources:
-      static-locations: classpath:/image/default/
-
   redis:
     host: 127.0.0.1
     port: 6379
@@ -83,3 +80,10 @@ spring:
         smtp:
           starttls:
             enable: true
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: classpath:/static/images/default/
+      add-mappings: true
+

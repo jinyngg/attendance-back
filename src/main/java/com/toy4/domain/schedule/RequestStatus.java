@@ -1,28 +1,27 @@
 package com.toy4.domain.schedule;
 
-import java.util.Arrays;
-
-import com.toy4.domain.dayoff.exception.DayOffException;
 import com.toy4.global.response.type.ErrorCode;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
 public enum RequestStatus {
-    REQUESTED("요청됨"),
-    CANCELLED("취소됨"),
+
+    REQUESTED("대기중"),
+    CANCELLED("취소"),
     APPROVED("승인됨"),
     REJECTED("거절됨")
     ;
 
     private final String description;
 
-    public static RequestStatus getByTypeString(String type) {
+    public static RequestStatus getByDescription(String description) {
         return Arrays.stream(values())
-            .filter(requestStatus -> requestStatus.getDescription().equals(type))
+            .filter(requestStatus -> requestStatus.getDescription().equals(description))
             .findFirst()
-            .orElseThrow(() -> new DayOffException(ErrorCode.INVALID_DAY_OFF_TYPE));
+            .orElseThrow(() -> new ScheduleException(ErrorCode.INVALID_SCHEDULE_REQUEST_STATUS));
     }
 }

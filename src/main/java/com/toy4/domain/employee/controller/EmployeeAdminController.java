@@ -1,13 +1,18 @@
 package com.toy4.domain.employee.controller;
-
-import com.toy4.domain.dayOffHistory.service.DayOffHistoryService;
-import com.toy4.domain.dutyHistory.service.DutyHistoryService;
 import com.toy4.domain.employee.dto.request.EmployeeInfoRequest;
+import com.toy4.domain.employee.exception.EmployeeException;
 import com.toy4.domain.employee.service.EmployeeService;
 import com.toy4.global.response.dto.CommonResponse;
+import com.toy4.global.response.service.ResponseService;
+import com.toy4.global.response.type.SuccessCode;
+import com.toy4.global.utils.BindingResultHandler;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class EmployeeAdminController {
 
 	private final EmployeeService employeeService;
-	private final DayOffHistoryService dayOffHistoryService;
-	private final DutyHistoryService dutyHistoryService;
+	private final ResponseService responseService;
+	private final BindingResultHandler bindingResultHandler;
 
 	@GetMapping("/employees")
 	public ResponseEntity<?> getEmployees() {
@@ -34,22 +39,23 @@ public class EmployeeAdminController {
 
 	@PutMapping(path="/employee",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<?> updateEmployeeInfo (
-		@RequestPart EmployeeInfoRequest employeeInfoRequest,
-		@RequestPart(required=false) MultipartFile profile) {
+		@RequestPart(value = "employeeInfoRequest") EmployeeInfoRequest employeeInfoRequest,
+		@RequestPart(value = "profileImageFile", required=false) MultipartFile profileImageFile,
+		BindingResult bindingResult) {
 
-		CommonResponse<?> response = employeeService.updateEmployeeInfo(EmployeeInfoRequest.to(employeeInfoRequest), profile);
-		return ResponseEntity.ok(response);
+		if (bindingResult.hasFieldErrors()) {
+			String errorMessage = bindingResultHandler.getErrorMessageFromBindingResult(bindingResult);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(responseService.failure(errorMessage));
+		}
+
+		employeeService.updateEmployeeInfo(employeeInfoRequest.to(), profileImageFile);
+		return ResponseEntity.ok(responseService.success(null, SuccessCode.COMPLETE_PERSONAL_INFO_UPDATE));
 	}
 
-	@GetMapping("/employees/{employeeId}/day-offs")
-	public ResponseEntity<?> getEmployeeApprovedDayOff(@PathVariable Long employeeId) {
-		CommonResponse<?> response = dayOffHistoryService.getEmployeeApprovedDayOff(employeeId);
-		return ResponseEntity.ok(response);
-	}
-
-	@GetMapping("/employees/{employeeId}/duties")
-	public ResponseEntity<?> getEmployeeApprovedDuty(@PathVariable Long employeeId) {
-		CommonResponse<?> response = dutyHistoryService.getEmployeeApprovedDuty(employeeId);
-		return ResponseEntity.ok(response);
+	@ExceptionHandler
+	public ResponseEntity<?> handleEmployeeException(EmployeeException e) {
+		return ResponseEntity.status(e.getHttpStatus())
+			.body(responseService.failure(e.getErrorCode()));
 	}
 }

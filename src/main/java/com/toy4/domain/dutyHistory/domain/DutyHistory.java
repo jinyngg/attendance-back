@@ -2,7 +2,7 @@ package com.toy4.domain.dutyHistory.domain;
 
 import com.toy4.domain.BaseEntity;
 import com.toy4.domain.dutyHistory.dto.DutyHistoryDto;
-import com.toy4.domain.dutyHistory.dto.DutyRegistrationRequest;
+import com.toy4.domain.dutyHistory.dto.DutyRegistration;
 import com.toy4.domain.employee.domain.Employee;
 import com.toy4.domain.schedule.RequestStatus;
 import lombok.AllArgsConstructor;
@@ -35,12 +35,20 @@ public class DutyHistory extends BaseEntity {
         this.status = dto.getStatus();
     }
 
-    public static DutyHistory from(Employee employee, DutyRegistrationRequest requestBody) {
+    public static DutyHistory from(Employee employee, DutyRegistration dto) {
         return builder()
                 .employee(employee)
                 .status(RequestStatus.REQUESTED)
-                .date(requestBody.getDate())
-                .reason(requestBody.getReason())
+                .date(dto.getDate())
+                .reason(dto.getReason())
                 .build();
+    }
+
+    public void updateStatus(RequestStatus requestStatus) {
+        this.status = requestStatus;
+    }
+
+    public void updateDate(LocalDate date) {
+        this.date = date;
     }
 }

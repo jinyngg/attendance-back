@@ -57,6 +57,16 @@ public enum ErrorCode {
     PAST_DATE(HttpStatus.BAD_REQUEST, "이미 지난 날짜의 경우는 신청할 수 없습니다."),
     NULL_DATE(HttpStatus.BAD_REQUEST, "날짜가 입력되지 않았습니다."),
     OVERLAPPED_DUTY_DATE(HttpStatus.BAD_REQUEST, "이미 존재하는 '요청됨' 또는 '승인됨' 상태의 당직, '연차' 또는 '특별 휴가'와 날짜가 겹칩니다."),
+
+    INVALID_SCHEDULE_REQUEST_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 스케쥴 요청 상태입니다."),
+    UNMATCHED_SCHEDULE_AND_EMPLOYEE(HttpStatus.BAD_REQUEST, "요청된 스케쥴 id와 직원 id가 매칭되지 않습니다."),
+    ALREADY_RESPONDED_SCHEDULE(HttpStatus.BAD_REQUEST, "이미 응답 처리되어 변경할 수 없는 스케쥴입니다. 대기중인 스케쥴만 수정이 가능합니다."),
+
+    DAY_OFF_NOT_FOUND(HttpStatus.BAD_REQUEST, "요청된 id를 가진 연차 정보를 찾을 수 없습니다."),
+
+    DUTY_NOT_FOUND(HttpStatus.BAD_REQUEST, "요청된 id를 가진 당직 정보를 찾을 수 없습니다."),
+
+    OVERLAPPED_DAY_OFF_DATE(HttpStatus.BAD_REQUEST, "이미 존재하는 '요청됨' 또는 '승인됨' 상태의 연차 또는 당직과 날짜가 겹칩니다."),
     ;
 
     private final HttpStatus httpStatus;
